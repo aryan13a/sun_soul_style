@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio | Sun & Soul Style</title>
+  <meta name="description" content="Browse our curated collection of luxury residential interiors, featuring warm organic styling, walnut details and Mediterranean light.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="page-projects" style="padding-top: var(--header-height);">
+
+  <!-- Custom Cursor Elements -->
+  <div class="custom-cursor"></div>
+  <div class="custom-cursor-follower"></div>
+
+  <!-- Header Navigation -->
+  <header>
+    <div class="container nav-container">
+      <a href="/" class="logo">
+        <img src="/assets/logo.svg" alt="Sun & Soul Style Logo" class="logo-img">
+        <span class="logo-text js-brand-name">Sun & Soul Style</span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/projects.html" class="active">Portfolio</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/services.html">Services</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+      </ul>
+      
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Portfolio Intro Header -->
+  <section class="section-padding" style="padding-bottom: 40px; background-color: var(--color-warm-white);">
+    <div class="container" style="text-align: center;">
+      <span class="section-subtitle reveal">Our Spaces</span>
+      <h1 class="serif-title reveal reveal-delay-1" style="font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; margin-top: 15px; margin-bottom: 25px;">Portfolio</h1>
+      <p class="reveal reveal-delay-2" style="max-width: 600px; margin: 0 auto; opacity: 0.8; font-weight: 300;">A curated registry of residential interior case studies. Guided by natural materials, balanced compositions, and slow light.</p>
+    </div>
+  </section>
+
+  <!-- Filters & Grid -->
+  <section class="section-padding" style="padding-top: 40px;">
+    <div class="container">
+      
+      <!-- Dynamic Filters Container -->
+      <div class="filters-container reveal" id="portfolio-filters">
+        <!-- Rendered dynamically by main.js -->
+        <button class="filter-btn active" data-filter="all">All Projects</button>
+      </div>
+
+      <!-- Portfolio Grid -->
+      <div class="projects-grid" id="portfolio-grid">
+        <!-- Rendered dynamically by main.js -->
+        <p style="grid-column: 1/-1; text-align: center; opacity: 0.5;">Loading design portfolio...</p>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <img src="/assets/logo.svg" alt="Sun & Soul Style Logo" class="logo-img">
+            <span class="logo-text js-brand-name">Sun & Soul Style</span>
+          </a>
+          <p class="footer-tagline">Warm, elevated interiors crafted for slow living. Based in California, styling globally.</p>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Explore</h3>
+          <ul class="footer-links">
+            <li><a href="/projects.html">Portfolio</a></li>
+            <li><a href="/about.html">About Elena</a></li>
+            <li><a href="/services.html">Design Services</a></li>
+            <li><a href="/contact.html">Work With Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <ul class="footer-links">
+            <li><span class="js-studio-location">Ojai, California</span></li>
+            <li><a href="mailto:hello@sunsoulstyle.com" class="js-bio-email">hello@sunsoulstyle.com</a></li>
+            <li><a href="tel:+18055550143" class="js-bio-phone">+1 (805) 555-0143</a></li>
+            <li><a href="https://instagram.com" target="_blank" rel="noopener" class="js-instagram-handle">@sunsoulstyle</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 <span class="js-brand-name">Sun & Soul Style</span>. All rights reserved.</p>
+        <p style="opacity: 0.7;"><a href="/admin">Client Admin Login</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

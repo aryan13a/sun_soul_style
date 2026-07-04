@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Case Study | Sun & Soul Style</title>
+  <meta name="description" content="Explore the details of our interior design project. View before & after comparisons, materials palette, and the visual design story.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="page-project-detail">
+
+  <!-- Custom Cursor Elements -->
+  <div class="custom-cursor"></div>
+  <div class="custom-cursor-follower"></div>
+
+  <!-- Header Navigation -->
+  <header>
+    <div class="container nav-container">
+      <a href="/" class="logo">
+        <img src="/assets/logo.svg" alt="Sun & Soul Style Logo" class="logo-img">
+        <span class="logo-text js-brand-name">Sun & Soul Style</span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/projects.html" class="active">Portfolio</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/services.html">Services</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+      </ul>
+      
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Case Study Hero Banner -->
+  <section class="project-detail-hero">
+    <img id="project-hero-img" src="/assets/project-living.jpg" alt="Interior Showcase Hero">
+    <div class="project-detail-hero-overlay"></div>
+    <div class="project-detail-header">
+      <div class="container">
+        <span class="section-subtitle" id="project-category" style="color: var(--color-ochre); margin-bottom: 10px; display: block; letter-spacing: 0.2em;">Interior Category</span>
+        <h1 class="serif-title" id="project-title" style="font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 300;">Project Title</h1>
+      </div>
+    </div>
+  </section>
+
+  <!-- Project Story & Specs -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="project-meta-grid">
+        
+        <!-- Story Column -->
+        <div class="project-story-col reveal">
+          <span class="section-subtitle" style="margin-bottom: 10px; display: block;">The Story</span>
+          <h2 class="serif-title" id="project-desc" style="font-size: 2.2rem; font-weight: 300; line-height: 1.2; margin-bottom: 24px; font-style: italic;">Design Concept Narrative</h2>
+          <div class="project-story-text" id="project-story">
+            Project narrative details...
+          </div>
+        </div>
+        
+        <!-- Specs Column -->
+        <div class="project-spec-col reveal reveal-delay-1">
+          <div class="spec-group">
+            <h4>Materials & Textures</h4>
+            <ul class="spec-list" id="project-materials">
+              <!-- Rendered dynamically -->
+            </ul>
+          </div>
+          
+          <div class="spec-group">
+            <h4>Color Palette</h4>
+            <div class="palette-circles" id="project-palette">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Before / After Slider Section -->
+  <section class="comparison-section section-padding" id="before-after-section">
+    <div class="container">
+      <div class="section-header reveal" style="text-align: center; justify-content: center; margin-bottom: 50px;">
+        <div class="section-title">
+          <span class="section-subtitle">Transformation</span>
+          <h2>Before & After</h2>
+        </div>
+      </div>
+      
+      <!-- Interactive Slider -->
+      <div class="comparison-container reveal reveal-delay-1">
+        
+        <!-- Before image (lies on top, gets cropped by width %) -->
+        <div class="comparison-img comparison-before">
+          <img id="before-img" src="" alt="Room before renovation">
+        </div>
+        
+        <!-- After image (lies underneath) -->
+        <div class="comparison-img comparison-after">
+          <img id="after-img" src="" alt="Finished design showcase">
+        </div>
+        
+        <!-- Center Handle -->
+        <div class="comparison-handle">
+          <div class="comparison-handle-button">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 9L1 5L5 1M13 9L17 5L13 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Study Image Gallery -->
+  <section class="gallery-section section-padding" style="background-color: var(--color-warm-white);">
+    <div class="container">
+      <h3 class="serif-title reveal" style="font-size: 2.2rem; font-weight: 300; font-style: italic;">Visual Archive</h3>
+      
+      <div class="project-gallery-grid" id="gallery-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <img src="/assets/logo.svg" alt="Sun & Soul Style Logo" class="logo-img">
+            <span class="logo-text js-brand-name">Sun & Soul Style</span>
+          </a>
+          <p class="footer-tagline">Warm, elevated interiors crafted for slow living. Based in California, styling globally.</p>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Explore</h3>
+          <ul class="footer-links">
+            <li><a href="/projects.html">Portfolio</a></li>
+            <li><a href="/about.html">About Elena</a></li>
+            <li><a href="/services.html">Design Services</a></li>
+            <li><a href="/contact.html">Work With Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <ul class="footer-links">
+            <li><span class="js-studio-location">Ojai, California</span></li>
+            <li><a href="mailto:hello@sunsoulstyle.com" class="js-bio-email">hello@sunsoulstyle.com</a></li>
+            <li><a href="tel:+18055550143" class="js-bio-phone">+1 (805) 555-0143</a></li>
+            <li><a href="https://instagram.com" target="_blank" rel="noopener" class="js-instagram-handle">@sunsoulstyle</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 <span class="js-brand-name">Sun & Soul Style</span>. All rights reserved.</p>
+        <p style="opacity: 0.7;"><a href="/admin">Client Admin Login</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

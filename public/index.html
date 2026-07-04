@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sun & Soul Style | Premium Interior Design Studio</title>
+  <meta name="description" content="Elevated, organic residential spaces designed by Elena Rostova. Warm neutrals, natural light, and custom walnut accents in Ojai, California.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="page-home">
+
+  <!-- Custom Cursor Elements -->
+  <div class="custom-cursor"></div>
+  <div class="custom-cursor-follower"></div>
+
+  <!-- Header Navigation -->
+  <header>
+    <div class="container nav-container">
+      <a href="/" class="logo">
+        <img src="/assets/logo.svg" alt="Sun & Soul Style Logo" class="logo-img">
+        <span class="logo-text js-brand-name">Sun & Soul Style</span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="/" class="active">Home</a></li>
+        <li><a href="/projects.html">Portfolio</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/services.html">Services</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+      </ul>
+      
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-media" id="hero-media-container">
+      <img src="/assets/hero-interior.jpg" alt="Warm Organic Modern Living Room">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-subtitle">Boutique Interior Studio</span>
+      <h1 class="hero-title js-brand-name">Sun & Soul Style</h1>
+      <p class="hero-tagline js-tagline">Warm, elevated spaces shaped by natural light and organic textures.</p>
+    </div>
+    <a href="#philosophy" class="scroll-cue">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </a>
+  </section>
+
+  <!-- Philosophy Section -->
+  <section class="philosophy-section section-padding" id="philosophy">
+    <div class="container philosophy-container">
+      <img src="/assets/logo.svg" alt="Emblem Motif" class="logo-motif reveal">
+      <p class="philosophy-text reveal reveal-delay-1" id="philosophy-text">
+        "We believe a home should feel like an extension of the soul. Our design language merges tactile simplicity with confident refinement — balancing cream boucle textures, raw walnut wood, and warm Mediterranean tones."
+      </p>
+      <span class="philosophy-author reveal reveal-delay-2">— <span class="js-designer-name">Elena Rostova</span>, Principal Designer</span>
+    </div>
+  </section>
+
+  <!-- Featured Projects -->
+  <section class="featured-projects section-padding">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-title">
+          <span class="section-subtitle">Our Work</span>
+          <h2>Featured Spaces</h2>
+        </div>
+        <a href="/projects.html" class="btn-underline">View Portfolio</a>
+      </div>
+      
+      <div class="projects-grid" id="featured-projects-grid">
+        <!-- Rendered dynamically by main.js -->
+        <p style="grid-column: 1/-1; text-align: center; opacity: 0.5;">Loading portfolio spaces...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials-section section-padding">
+    <div class="container">
+      <div class="section-header reveal" style="justify-content: center; text-align: center; margin-bottom: 40px;">
+        <div class="section-title">
+          <span class="section-subtitle">Kind Words</span>
+          <h2>Client Notes</h2>
+        </div>
+      </div>
+      
+      <div class="testimonials-container reveal reveal-delay-1" id="testimonials-slider-container">
+        <!-- Rendered dynamically by main.js -->
+      </div>
+      
+      <div class="testimonial-controls reveal reveal-delay-2">
+        <button class="testimonial-control-btn" id="test-prev" aria-label="Previous note">
+          <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 11L2 6L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="testimonial-control-btn" id="test-next" aria-label="Next note">
+          <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 11L6 6L1 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curated Instagram strip -->
+  <section class="instagram-section">
+    <div class="instagram-grid">
+      <a href="https://instagram.com" target="_blank" rel="noopener" class="instagram-item reveal">
+        <img src="/assets/project-living.jpg" alt="Interior mood living space">
+        <div class="instagram-overlay"><span>@sunsoulstyle</span></div>
+      </a>
+      <a href="https://instagram.com" target="_blank" rel="noopener" class="instagram-item reveal reveal-delay-1">
+        <img src="/assets/project-kitchen.jpg" alt="Detail shot raw walnut cupboard">
+        <div class="instagram-overlay"><span>@sunsoulstyle</span></div>
+      </a>
+      <a href="https://instagram.com" target="_blank" rel="noopener" class="instagram-item reveal reveal-delay-2">
+        <img src="/assets/project-bedroom.jpg" alt="Textured terracotta linen bed">
+        <div class="instagram-overlay"><span>@sunsoulstyle</span></div>
+      </a>
+      <a href="https://instagram.com" target="_blank" rel="noopener" class="instagram-item reveal reveal-delay-3">
+        <img src="/assets/project-dining.jpg" alt="Oak dining curved corner">
+        <div class="instagram-overlay"><span>@sunsoulstyle</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Newsletter / CTA Band -->
+  <section class="newsletter-section section-padding">
+    <div class="container newsletter-container reveal">
+      <span class="section-subtitle" style="color: var(--color-ochre);">Connect With Us</span>
+      <h2>Newsletter</h2>
+      <p>Subscribe to receive curated design stories, material essays, and project reveals.</p>
+      
+      <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing!'); this.reset();">
+        <input type="email" class="newsletter-input" placeholder="Your Email Address" aria-label="Email Address" required>
+        <button type="submit" class="btn-newsletter">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <img src="/assets/logo.svg" alt="Sun & Soul Style Logo" class="logo-img">
+            <span class="logo-text js-brand-name">Sun & Soul Style</span>
+          </a>
+          <p class="footer-tagline">Warm, elevated interiors crafted for slow living. Based in California, styling globally.</p>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Explore</h3>
+          <ul class="footer-links">
+            <li><a href="/projects.html">Portfolio</a></li>
+            <li><a href="/about.html">About Elena</a></li>
+            <li><a href="/services.html">Design Services</a></li>
+            <li><a href="/contact.html">Work With Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <ul class="footer-links">
+            <li><span class="js-studio-location">Ojai, California</span></li>
+            <li><a href="mailto:hello@sunsoulstyle.com" class="js-bio-email">hello@sunsoulstyle.com</a></li>
+            <li><a href="tel:+18055550143" class="js-bio-phone">+1 (805) 555-0143</a></li>
+            <li><a href="https://instagram.com" target="_blank" rel="noopener" class="js-instagram-handle">@sunsoulstyle</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 <span class="js-brand-name">Sun & Soul Style</span>. All rights reserved.</p>
+        <p style="opacity: 0.7;"><a href="/admin">Client Admin Login</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

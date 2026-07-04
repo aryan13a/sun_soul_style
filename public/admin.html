@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio CMS Dashboard | Sun & Soul Style</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Toast Feedbacks -->
+  <div id="admin-toast" class="admin-toast">Action completed successfully</div>
+
+  <div class="admin-wrapper">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <img src="/assets/logo.svg" alt="Sun & Soul Style Logo" class="sidebar-logo">
+        <div class="sidebar-title">
+          <h1>Sun & Soul</h1>
+          <span>Studio CMS</span>
+        </div>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item active" data-tab="overview">
+          <a href="#">
+            <span>Overview Stats</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item" data-tab="homepage">
+          <a href="#">
+            <span>Home & Bio Details</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item" data-tab="projects">
+          <a href="#">
+            <span>Portfolio Projects</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item" data-tab="services">
+          <a href="#">
+            <span>Design Packages</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item" data-tab="testimonials">
+          <a href="#">
+            <span>Client Notes</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item" data-tab="inquiries">
+          <a href="#">
+            <span>Inquiries Inbox</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item" data-tab="settings">
+          <a href="#">
+            <span>Dashboard Security</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <div class="sidebar-user">Logged in as <strong>admin</strong></div>
+        <a href="#" id="admin-logout-btn" class="btn-logout">
+          <span>Log Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="admin-main">
+      
+      <!-- 1. OVERVIEW STATS TAB -->
+      <section class="tab-panel active" id="tab-overview">
+        <div class="main-header">
+          <h2>Overview Stats</h2>
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Active Projects</span>
+            <span class="stat-value" id="stat-projects-count">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Configured Packages</span>
+            <span class="stat-value" id="stat-services-count">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Inquiries</span>
+            <span class="stat-value" id="stat-inquiries-count">0</span>
+          </div>
+          <div class="stat-card" style="border-color: var(--color-ochre);">
+            <span class="stat-label" style="color: var(--color-ochre);">Unread Messages</span>
+            <span class="stat-value" id="stat-unread-count">0</span>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3 class="admin-card-title">Welcome back, Elena</h3>
+          </div>
+          <p>This admin panel lets you edit all content on your live portfolio website instantly. You can update text descriptions, change pricing and services, upload high-resolution images (which are automatically resized and optimized for fast page loads), and read incoming messages from prospective clients. No coding or site redeployment is ever required.</p>
+          <div style="margin-top: 24px;">
+            <a href="/" target="_blank" class="btn-admin-primary">View Live Website &rarr;</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. HOME & BIO DETAILS TAB -->
+      <section class="tab-panel" id="tab-homepage">
+        <div class="main-header">
+          <h2>Home & Bio Details</h2>
+        </div>
+        
+        <form class="admin-form" id="homepage-edit-form">
+          
+          <!-- Homepage Texts Card -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">Homepage Header</h3>
+            </div>
+            
+            <div class="form-row" style="margin-bottom: 15px;">
+              <div class="form-group">
+                <label for="home-brand-name">Studio / Brand Name</label>
+                <input type="text" id="home-brand-name" required>
+              </div>
+              <div class="form-group">
+                <label for="home-designer-name">Designer Name</label>
+                <input type="text" id="home-designer-name" required>
+              </div>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+              <label for="home-tagline">Header Tagline</label>
+              <input type="text" id="home-tagline" required>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+              <label for="home-philosophy">Homepage Intro / Philosophy Statement</label>
+              <textarea id="home-philosophy" rows="3" required></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="home-video-url">Hero Video MP4 URL (Optional)</label>
+                <input type="text" id="home-video-url" placeholder="e.g. /assets/hero-video.mp4">
+              </div>
+              <div class="form-group">
+                <label>Hero Fallback Image (WebP/JPG)</label>
+                <div class="image-upload-wrapper">
+                  <div class="image-preview" id="home-fallback-img-preview">No Image</div>
+                  <input type="hidden" id="home-fallback-img">
+                  <div class="upload-btn-wrapper">
+                    <button type="button" class="btn-upload">Choose Image</button>
+                    <input type="file" accept="image/*" data-target="home-fallback-img" data-preview="home-fallback-img-preview">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- About Story Bio Card -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">Bio & About Details</h3>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="about-bio">Biography (Use double enter for new paragraphs)</label>
+                <textarea id="about-bio" rows="8" required></textarea>
+              </div>
+              <div class="form-group">
+                <label>Designer Portrait Photo</label>
+                <div class="image-upload-wrapper" style="margin-top: 10px;">
+                  <div class="image-preview" id="about-bio-photo-preview" style="height: 140px;">No Image</div>
+                  <input type="hidden" id="about-bio-photo">
+                  <div class="upload-btn-wrapper">
+                    <button type="button" class="btn-upload">Choose Photo</button>
+                    <input type="file" accept="image/*" data-target="about-bio-photo" data-preview="about-bio-photo-preview">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Footer Contact Details -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">Studio Contact Info</h3>
+            </div>
+            
+            <div class="form-row" style="margin-bottom: 15px;">
+              <div class="form-group">
+                <label for="contact-email-addr">Contact Email Address</label>
+                <input type="email" id="contact-email-addr" required>
+              </div>
+              <div class="form-group">
+                <label for="contact-phone-num">Studio Phone Number</label>
+                <input type="text" id="contact-phone-num" required>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-location">Studio Location / City</label>
+                <input type="text" id="contact-location" required>
+              </div>
+              <div class="form-group">
+                <label for="contact-instagram">Instagram Handle</label>
+                <input type="text" id="contact-instagram" required>
+              </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 15px;">
+              <label for="contact-response-note-text">Contact Form Response-time Note</label>
+              <input type="text" id="contact-response-note-text" required>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn-admin-primary" style="margin-top: 10px;">Save General Changes</button>
+        </form>
+      </section>
+
+      <!-- 3. PORTFOLIO PROJECTS TAB -->
+      <section class="tab-panel" id="tab-projects">
+        <div class="main-header">
+          <h2>Portfolio Projects</h2>
+          <div class="main-header-actions">
+            <button class="btn-admin-primary" id="btn-add-project">+ Add New Project</button>
+          </div>
+        </div>
+        
+        <div class="admin-card">
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Project Space</th>
+                  <th>Category</th>
+                  <th>Design Style</th>
+                  <th>Featured</th>
+                  <th style="width: 80px;">Order</th>
+                  <th style="width: 150px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="projects-table-body">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. SERVICES / PACKAGES TAB -->
+      <section class="tab-panel" id="tab-services">
+        <div class="main-header">
+          <h2>Design Packages</h2>
+          <div class="main-header-actions">
+            <button class="btn-admin-primary" id="btn-add-service-item">+ Add Package</button>
+          </div>
+        </div>
+        
+        <form class="admin-form" id="services-edit-form">
+          <div id="services-list-container">
+            <!-- Loaded dynamically -->
+          </div>
+          
+          <button type="submit" class="btn-admin-primary">Save Packages Configuration</button>
+        </form>
+      </section>
+
+      <!-- 5. CLIENT TESTIMONIALS TAB -->
+      <section class="tab-panel" id="tab-testimonials">
+        <div class="main-header">
+          <h2>Client Notes / Testimonials</h2>
+          <div class="main-header-actions">
+            <button class="btn-admin-primary" id="btn-add-testimonial">+ Add Testimonial</button>
+          </div>
+        </div>
+        
+        <form class="admin-form" id="testimonials-edit-form">
+          <div id="testimonials-list-container">
+            <!-- Loaded dynamically -->
+          </div>
+          
+          <button type="submit" class="btn-admin-primary">Save Testimonials</button>
+        </form>
+      </section>
+
+      <!-- 6. INQUIRIES INBOX TAB -->
+      <section class="tab-panel" id="tab-inquiries">
+        <div class="main-header">
+          <h2>Inquiries Inbox</h2>
+        </div>
+        
+        <div class="admin-card">
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Email</th>
+                  <th>Project Type</th>
+                  <th>Received Date</th>
+                  <th style="width: 220px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inquiries-table-body">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. SECURITY SETTINGS TAB -->
+      <section class="tab-panel" id="tab-settings">
+        <div class="main-header">
+          <h2>Dashboard Security</h2>
+        </div>
+        
+        <div class="admin-card" style="max-width: 600px;">
+          <div class="admin-card-header">
+            <h3 class="admin-card-title">Change Password</h3>
+          </div>
+          
+          <form class="admin-form" id="settings-password-form">
+            <div class="form-group">
+              <label for="set-curr-pass">Current Password</label>
+              <input type="password" id="set-curr-pass" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="set-new-pass">New Password</label>
+              <input type="password" id="set-new-pass" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="set-new-pass-confirm">Confirm New Password</label>
+              <input type="password" id="set-new-pass-confirm" required>
+            </div>
+            
+            <button type="submit" class="btn-admin-primary" style="margin-top: 10px;">Change Password</button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: ADD / EDIT PROJECT -->
+  <div class="admin-modal" id="project-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="project-modal-title">Edit Project</h3>
+        <span class="modal-close" onclick="closeProjectModal()">&times;</span>
+      </div>
+      
+      <form class="admin-form" id="project-edit-form">
+        <div class="modal-body">
+          <input type="hidden" id="proj-id">
+          
+          <div class="form-row" style="margin-bottom: 15px;">
+            <div class="form-group">
+              <label for="proj-title">Project Title</label>
+              <input type="text" id="proj-title" placeholder="e.g. The Ojai Hacienda" required>
+            </div>
+            <div class="form-group">
+              <label for="proj-category">Category (Filters Grid)</label>
+              <input type="text" id="proj-category" placeholder="e.g. Full Home" required>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-bottom: 15px;">
+            <div class="form-group">
+              <label for="proj-room-type">Room Selection Type</label>
+              <select id="proj-room-type">
+                <option value="full-home">Full Home</option>
+                <option value="living-room">Living Room</option>
+                <option value="kitchen">Kitchen</option>
+                <option value="bedroom">Bedroom</option>
+                <option value="dining-room">Dining Room</option>
+                <option value="other">Other / Detail Space</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="proj-style">Design Style</label>
+              <input type="text" id="proj-style" placeholder="e.g. Mediterranean" required>
+            </div>
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="proj-description">Brief Description (Homepage Hover / Summary)</label>
+            <input type="text" id="proj-description" placeholder="A warm, light-filled sanctuary..." required>
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="proj-story">Design Story & Process Details</label>
+            <textarea id="proj-story" rows="5" placeholder="Describe the space planning, materials, client collaboration..." required></textarea>
+          </div>
+
+          <!-- Color Palette Picker -->
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label>Color Palette Swatches</label>
+            <div style="display: flex; gap: 20px; align-items: center; margin-top: 5px;">
+              <input type="color" id="proj-color-1" value="#FAF6F0">
+              <input type="color" id="proj-color-2" value="#D9A05B">
+              <input type="color" id="proj-color-3" value="#C86B55">
+              <input type="color" id="proj-color-4" value="#5C4033">
+              <span style="font-size: 0.8rem; opacity: 0.6;">Select colors matching the case study palette</span>
+            </div>
+          </div>
+
+          <!-- Materials tag creator -->
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label>Materials used (e.g. Cream Boucle, Honed Marble)</label>
+            <div class="tags-input-container">
+              <div id="proj-materials-container" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+              <input type="text" id="proj-new-material" placeholder="Type material & click Add" style="border:none; padding: 2px;">
+              <button type="button" class="btn-admin-secondary" id="btn-add-material" style="padding: 4px 10px; font-size: 0.75rem;">+ Add</button>
+            </div>
+          </div>
+
+          <!-- Images grid upload -->
+          <div class="form-row" style="margin-bottom: 20px;">
+            <div class="form-group">
+              <label>Cover Image (Required)</label>
+              <div class="image-upload-wrapper">
+                <div class="image-preview" id="proj-cover-img-preview">No Image</div>
+                <input type="hidden" id="proj-cover-img" required>
+                <div class="upload-btn-wrapper">
+                  <button type="button" class="btn-upload">Choose</button>
+                  <input type="file" accept="image/*" data-target="proj-cover-img" data-preview="proj-cover-img-preview">
+                </div>
+              </div>
+            </div>
+            <div class="form-group" style="display: flex; flex-direction: row; gap: 15px; display: none;">
+              <input type="hidden" id="proj-order" value="0">
+              <input type="checkbox" id="proj-featured" style="width: 20px; height: 20px; cursor: pointer;">
+              <label for="proj-featured" style="cursor: pointer; margin-top: 2px;">Feature on Homepage Grid</label>
+            </div>
+            <div class="form-group">
+              <div style="display: flex; gap: 10px; align-items: center; height: 100%;">
+                <input type="checkbox" id="proj-featured" style="width: 20px; height: 20px; cursor: pointer; margin: 0;">
+                <label for="proj-featured" style="cursor: pointer; font-weight: 500; color: var(--color-dark);">Feature on Homepage Grid</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Before / After Images (Optional) -->
+          <div class="form-row" style="margin-bottom: 20px; border-top: 1px solid var(--color-gray-light); padding-top: 15px;">
+            <div class="form-group">
+              <label>Before Image (Optional slider comparison)</label>
+              <div class="image-upload-wrapper">
+                <div class="image-preview" id="proj-before-img-preview">No Image</div>
+                <input type="hidden" id="proj-before-img">
+                <div class="upload-btn-wrapper">
+                  <button type="button" class="btn-upload">Choose</button>
+                  <input type="file" accept="image/*" data-target="proj-before-img" data-preview="proj-before-img-preview">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>After Image (Required slider comparison)</label>
+              <div class="image-upload-wrapper">
+                <div class="image-preview" id="proj-after-img-preview">No Image</div>
+                <input type="hidden" id="proj-after-img">
+                <div class="upload-btn-wrapper">
+                  <button type="button" class="btn-upload">Choose</button>
+                  <input type="file" accept="image/*" data-target="proj-after-img" data-preview="proj-after-img-preview">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Image Gallery Grid (Multi-file upload) -->
+          <div class="form-group" style="border-top: 1px solid var(--color-gray-light); padding-top: 15px;">
+            <label>Case Study Gallery Images (High-Res, optimized on upload)</label>
+            <div class="upload-btn-wrapper" style="margin: 10px 0;">
+              <button type="button" class="btn-admin-secondary">+ Upload Multiple Gallery Images</button>
+              <input type="file" accept="image/*" multiple data-target="proj-gallery" data-preview="proj-gallery-preview">
+            </div>
+            
+            <div id="proj-gallery-container" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 10px;">
+              <!-- Gallery preview cards loaded dynamically -->
+            </div>
+          </div>
+
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn-admin-secondary" onclick="closeProjectModal()">Cancel</button>
+          <button type="submit" class="btn-admin-primary">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: VIEW CLIENT INQUIRY MESSAGE -->
+  <div class="admin-modal" id="inquiry-modal">
+    <div class="modal-content" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3>Client Inquiry Details</h3>
+        <span class="modal-close" onclick="closeInquiryModal()">&times;</span>
+      </div>
+      
+      <div class="modal-body">
+        <table class="admin-table" style="margin-bottom: 20px;">
+          <tr>
+            <th style="width: 150px; background: none; border:none; padding: 10px 0;">Client Name</th>
+            <td style="border:none; padding: 10px 0;" id="inquiry-detail-name">Elena Rostova</td>
+          </tr>
+          <tr>
+            <th style="background: none; border:none; padding: 10px 0;">Email</th>
+            <td style="border:none; padding: 10px 0;"><a href="" id="inquiry-detail-email">hello@sunsoulstyle.com</a></td>
+          </tr>
+          <tr>
+            <th style="background: none; border:none; padding: 10px 0;">Project Type</th>
+            <td style="border:none; padding: 10px 0;" id="inquiry-detail-type">Full Home</td>
+          </tr>
+          <tr>
+            <th style="background: none; border:none; padding: 10px 0;">Estimated Budget</th>
+            <td style="border:none; padding: 10px 0;" id="inquiry-detail-budget">$100k-$200k</td>
+          </tr>
+          <tr>
+            <th style="background: none; border:none; padding: 10px 0;">Received Date</th>
+            <td style="border:none; padding: 10px 0;" id="inquiry-detail-date">Jul 4, 2026</td>
+          </tr>
+        </table>
+        
+        <div style="border-top: 1px solid var(--color-gray-light); padding-top: 20px;">
+          <h4 style="margin-bottom: 10px; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-olive);">Client Project Message</h4>
+          <p id="inquiry-detail-msg" style="white-space: pre-wrap; font-size: 1rem; line-height: 1.6; padding: 15px; background: var(--color-cream); border: 1px solid var(--color-gray-light); color: var(--color-dark);"></p>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn-admin-primary" onclick="closeInquiryModal()">Close Inquiry</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

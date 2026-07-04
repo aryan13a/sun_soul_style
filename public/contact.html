@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Sun & Soul Style</title>
+  <meta name="description" content="Get in touch with Elena Rostova for residential design services. Submit an inquiry with project details, location, and budget.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="page-contact" style="padding-top: var(--header-height);">
+
+  <!-- Custom Cursor Elements -->
+  <div class="custom-cursor"></div>
+  <div class="custom-cursor-follower"></div>
+
+  <!-- Header Navigation -->
+  <header>
+    <div class="container nav-container">
+      <a href="/" class="logo">
+        <img src="/assets/logo.svg" alt="Sun & Soul Style Logo" class="logo-img">
+        <span class="logo-text js-brand-name">Sun & Soul Style</span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/projects.html">Portfolio</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/services.html">Services</a></li>
+        <li><a href="/contact.html" class="active">Contact</a></li>
+      </ul>
+      
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contact Grid Page -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="contact-grid">
+        
+        <!-- Info Column -->
+        <div class="contact-info-col reveal">
+          <span class="section-subtitle">Connect</span>
+          <h1 class="serif-title">Shaping spaces together.</h1>
+          <p style="font-weight: 300; opacity: 0.85; margin-bottom: 20px;">We take on a limited number of residential interior projects each year to guarantee every client our complete dedication and creative depth. Share your details, and let's craft something beautiful.</p>
+          
+          <div class="contact-details">
+            <div class="contact-item">
+              <h3>The Studio</h3>
+              <p class="js-studio-location">Ojai, California</p>
+            </div>
+            
+            <div class="contact-item">
+              <h3>Email Inquiries</h3>
+              <p><a href="mailto:hello@sunsoulstyle.com" class="js-bio-email">hello@sunsoulstyle.com</a></p>
+            </div>
+            
+            <div class="contact-item">
+              <h3>Phone</h3>
+              <p><a href="tel:+18055550143" class="js-bio-phone">+1 (805) 555-0143</a></p>
+            </div>
+            
+            <div class="contact-item">
+              <h3>Note on Response</h3>
+              <p style="font-size: 0.95rem; opacity: 0.8; font-style: italic;" id="contact-response-note">We typically respond to new inquiries within 2-3 business days. We look forward to shaping your space.</p>
+            </div>
+          </div>
+          
+          <!-- Static elegant Map Placeholder -->
+          <div class="map-placeholder">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-right: 10px;">
+              <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke-linecap="round"/>
+              <path d="M12 8V12L14 14" stroke-linecap="round"/>
+            </svg>
+            <span>OJAI STUDIO &middot; OJAI, CA 93023</span>
+          </div>
+        </div>
+        
+        <!-- Form Column -->
+        <div class="contact-form-col reveal reveal-delay-1">
+          <form class="contact-form" id="contact-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-name">Your Name</label>
+                <input type="text" id="contact-name" placeholder="Elena Rostova" required>
+              </div>
+              <div class="form-group">
+                <label for="contact-email">Email Address</label>
+                <input type="email" id="contact-email" placeholder="elena@example.com" required>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-project-type">Project Type</label>
+                <select id="contact-project-type">
+                  <option value="Full Home Renovation">Full Home Renovation</option>
+                  <option value="Single Room Makeover">Single Room Makeover</option>
+                  <option value="E-Design Consultation">E-Design Curation</option>
+                  <option value="Consultation Call">Design Consultation</option>
+                  <option value="Other Inquiry">Other Design Inquiry</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="contact-budget">Estimated Budget</label>
+                <select id="contact-budget">
+                  <option value="Under $20k">Under $20,000</option>
+                  <option value="$20k - $50k">$20,000 - $50,000</option>
+                  <option value="$50k - $100k">$50,000 - $100,000</option>
+                  <option value="$100k - $200k">$100,000 - $200,000</option>
+                  <option value="$200k+">$200,000+</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="contact-message">Tell us about your space</label>
+              <textarea id="contact-message" placeholder="Please describe your room size, current style inspiration, and how you want the space to feel..." required></textarea>
+            </div>
+            
+            <button type="submit" class="btn-submit">Submit Inquiry</button>
+            
+            <div class="form-status" id="form-status"></div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <img src="/assets/logo.svg" alt="Sun & Soul Style Logo" class="logo-img">
+            <span class="logo-text js-brand-name">Sun & Soul Style</span>
+          </a>
+          <p class="footer-tagline">Warm, elevated interiors crafted for slow living. Based in California, styling globally.</p>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Explore</h3>
+          <ul class="footer-links">
+            <li><a href="/projects.html">Portfolio</a></li>
+            <li><a href="/about.html">About Elena</a></li>
+            <li><a href="/services.html">Design Services</a></li>
+            <li><a href="/contact.html">Work With Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <ul class="footer-links">
+            <li><span class="js-studio-location">Ojai, California</span></li>
+            <li><a href="mailto:hello@sunsoulstyle.com" class="js-bio-email">hello@sunsoulstyle.com</a></li>
+            <li><a href="tel:+18055550143" class="js-bio-phone">+1 (805) 555-0143</a></li>
+            <li><a href="https://instagram.com" target="_blank" rel="noopener" class="js-instagram-handle">@sunsoulstyle</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 <span class="js-brand-name">Sun & Soul Style</span>. All rights reserved.</p>
+        <p style="opacity: 0.7;"><a href="/admin">Client Admin Login</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
