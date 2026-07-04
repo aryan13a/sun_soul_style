@@ -2,7 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const DB_PATH = path.join(__dirname, 'db.json');
+const BUNDLE_DB_PATH = path.join(__dirname, 'db.json');
+const DB_PATH = process.env.VERCEL
+  ? path.join('/tmp', 'db.json')
+  : BUNDLE_DB_PATH;
 
 // Default initial database state
 const DEFAULT_DB = {
@@ -167,7 +170,15 @@ const DEFAULT_DB = {
 
 // Initialize DB file if not exists
 if (!fs.existsSync(DB_PATH)) {
-  fs.writeFileSync(DB_PATH, JSON.stringify(DEFAULT_DB, null, 2), 'utf-8');
+  let initialData = DEFAULT_DB;
+  if (fs.existsSync(BUNDLE_DB_PATH)) {
+    try {
+      initialData = JSON.parse(fs.readFileSync(BUNDLE_DB_PATH, 'utf-8'));
+    } catch (e) {
+      initialData = DEFAULT_DB;
+    }
+  }
+  fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2), 'utf-8');
 }
 
 function getData() {

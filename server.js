@@ -347,7 +347,9 @@ app.post('/api/upload', requireAuth, upload.single('image'), async (req, res) =>
   
   try {
     const filename = `img-${Date.now()}.webp`;
-    const uploadsDir = path.join(__dirname, 'public', 'uploads');
+    const uploadsDir = process.env.VERCEL
+      ? path.join('/tmp', 'uploads')
+      : path.join(__dirname, 'public', 'uploads');
     
     // Ensure uploads directory exists
     if (!fs.existsSync(uploadsDir)) {
@@ -396,6 +398,19 @@ app.post('/api/upload', requireAuth, upload.single('image'), async (req, res) =>
 function cryptoToken() {
   return crypto.randomBytes(24).toString('hex');
 }
+
+// Route to serve uploads (needed for serving from /tmp on Vercel)
+app.get('/uploads/:filename', (req, res) => {
+  const uploadsDir = process.env.VERCEL
+    ? path.join('/tmp', 'uploads')
+    : path.join(__dirname, 'public', 'uploads');
+  const filePath = path.join(uploadsDir, req.params.filename);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send('File not found');
+  }
+});
 
 // ------------------ PAGE SERVING ------------------
 
