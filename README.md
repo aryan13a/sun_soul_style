@@ -1,4 +1,4 @@
-# Sun & Soul Style — Premium Interior Designer Portfolio Website
+# Sun Soul Style — Premium Interior Designer Portfolio Website
 
 An elegant, editorial-style portfolio website built for a boutique interior design studio. Designed with soft neutral tones, raw wood details, and natural light to convey calm luxury and tactile refinement.
 

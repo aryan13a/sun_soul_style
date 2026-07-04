@@ -356,5 +356,5 @@ app.get('*', (req, res) => {
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`Sun & Soul Style website is running on http://localhost:${PORT}`);
+  console.log(`Sun Soul Style website is running on http://localhost:${PORT}`);
 });
