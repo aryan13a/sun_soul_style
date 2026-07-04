@@ -14,6 +14,16 @@ const db = require('./db');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware: Ensure database is initialized from Vercel Blob before serving any requests
+app.use(async (req, res, next) => {
+  try {
+    await db.waitForInit();
+  } catch (err) {
+    console.error("Database initialization check failed:", err);
+  }
+  next();
+});
+
 // Enable JSON and URL-encoded body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

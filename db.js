@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const https = require('https');
 
 const BUNDLE_DB_PATH = path.join(__dirname, 'db.json');
 const DB_PATH = process.env.VERCEL
@@ -168,17 +169,112 @@ const DEFAULT_DB = {
   messages: []
 };
 
-// Initialize DB file if not exists
-if (!fs.existsSync(DB_PATH)) {
-  let initialData = DEFAULT_DB;
-  if (fs.existsSync(BUNDLE_DB_PATH)) {
+// Helper: Fetch JSON from URL using native https module
+function fetchJson(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }).on('error', reject);
+  });
+}
+
+// Background sync function to write to Vercel Blob
+async function syncToVercelBlob(data) {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return;
+  try {
+    const { put } = require('@vercel/blob');
+    await put('db.json', JSON.stringify(data, null, 2), {
+      access: 'public',
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      token: process.env.BLOB_READ_WRITE_TOKEN
+    });
+    console.log("Database successfully synced to Vercel Blob.");
+  } catch (e) {
+    console.error("Failed to sync database to Vercel Blob in background:", e);
+  }
+}
+
+// Initialize database from Vercel Blob (if running on Vercel) or fallback locally
+let isInitialized = false;
+let initPromise = null;
+
+async function initDb() {
+  // If not on Vercel, initialize local db.json normally
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    if (!fs.existsSync(DB_PATH)) {
+      let initialData = DEFAULT_DB;
+      if (fs.existsSync(BUNDLE_DB_PATH)) {
+        try {
+          initialData = JSON.parse(fs.readFileSync(BUNDLE_DB_PATH, 'utf-8'));
+        } catch (e) {
+          initialData = DEFAULT_DB;
+        }
+      }
+      fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2), 'utf-8');
+    }
+    isInitialized = true;
+    return;
+  }
+
+  // If on Vercel, pull latest db.json from Vercel Blob first
+  try {
+    console.log("Initializing database from Vercel Blob...");
+    const { list } = require('@vercel/blob');
+    const listResult = await list({ token: process.env.BLOB_READ_WRITE_TOKEN });
+    const dbBlob = listResult.blobs.find(b => b.pathname === 'db.json');
+    
+    let initialData = DEFAULT_DB;
+    if (dbBlob) {
+      console.log("Found database blob at URL:", dbBlob.url);
+      initialData = await fetchJson(dbBlob.url);
+    } else {
+      console.log("No database blob found in store. Initializing with bundle content.");
+      if (fs.existsSync(BUNDLE_DB_PATH)) {
+        try {
+          initialData = JSON.parse(fs.readFileSync(BUNDLE_DB_PATH, 'utf-8'));
+        } catch (e) {
+          initialData = DEFAULT_DB;
+        }
+      }
+      // Write to Vercel Blob immediately so it exists next time
+      await syncToVercelBlob(initialData);
+    }
+    
+    // Ensure the local /tmp folder exists
+    const tmpDir = path.dirname(DB_PATH);
+    if (!fs.existsSync(tmpDir)) {
+      fs.mkdirSync(tmpDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2), 'utf-8');
+    console.log("Database initialized successfully in /tmp/db.json");
+  } catch (err) {
+    console.error("Vercel Blob initialization failed, using default db.json:", err);
+    // Fallback: write defaults to /tmp/db.json so server can still function
     try {
-      initialData = JSON.parse(fs.readFileSync(BUNDLE_DB_PATH, 'utf-8'));
-    } catch (e) {
-      initialData = DEFAULT_DB;
+      const tmpDir = path.dirname(DB_PATH);
+      if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+      fs.writeFileSync(DB_PATH, JSON.stringify(DEFAULT_DB, null, 2), 'utf-8');
+    } catch (fsErr) {
+      console.error("Failed to write fallback database locally:", fsErr);
     }
   }
-  fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2), 'utf-8');
+  isInitialized = true;
+}
+
+initPromise = initDb();
+
+function waitForInit() {
+  return initPromise;
 }
 
 function getData() {
@@ -187,7 +283,6 @@ function getData() {
     return JSON.parse(content);
   } catch (err) {
     console.error("Error reading database, resetting to default...", err);
-    // If JSON is malformed, rewrite it
     saveData(DEFAULT_DB);
     return DEFAULT_DB;
   }
@@ -197,6 +292,11 @@ function saveData(data) {
   const tempPath = `${DB_PATH}.tmp`;
   fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), 'utf-8');
   fs.renameSync(tempPath, DB_PATH);
+
+  // Trigger background sync to Vercel Blob in production
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    syncToVercelBlob(data);
+  }
 }
 
 function hashPassword(password) {
@@ -206,5 +306,6 @@ function hashPassword(password) {
 module.exports = {
   getData,
   saveData,
-  hashPassword
+  hashPassword,
+  waitForInit
 };
