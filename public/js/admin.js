@@ -54,6 +54,17 @@ function initLoginForm() {
   const form = document.getElementById('login-form');
   const errorEl = document.getElementById('login-error');
   
+  // Toggle password visibility
+  const togglePasswordBtn = document.getElementById('toggle-password');
+  const passwordInput = document.getElementById('login-password');
+  if (togglePasswordBtn && passwordInput) {
+    togglePasswordBtn.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePasswordBtn.textContent = type === 'password' ? 'Show' : 'Hide';
+    });
+  }
+
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();

@@ -8,7 +8,7 @@ const DB_PATH = path.join(__dirname, 'db.json');
 const DEFAULT_DB = {
   admin: {
     // Default password is 'admin123', hashed with sha256
-    passwordHash: '482c811f6cc95b9a4143a948a69e12013a73ff9c847414755f77fe14cd0b6641', // sha256 of 'admin123'
+    passwordHash: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // sha256 of 'admin123'
     username: 'admin'
   },
   siteInfo: {

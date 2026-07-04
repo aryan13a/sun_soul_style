@@ -23,7 +23,10 @@
       
       <div class="form-group">
         <label for="login-password">Password</label>
-        <input type="password" id="login-password" placeholder="Enter password" required autocomplete="current-password">
+        <div style="position: relative; display: flex; align-items: center;">
+          <input type="password" id="login-password" placeholder="Enter password" required autocomplete="current-password" style="flex-grow: 1; padding-right: 50px;">
+          <button type="button" id="toggle-password" style="position: absolute; right: 12px; background: none; border: none; cursor: pointer; color: var(--color-olive); font-size: 0.85rem; font-weight: 500;" aria-label="Toggle password visibility">Show</button>
+        </div>
       </div>
       
       <button type="submit" class="btn-login">Access Dashboard</button>
