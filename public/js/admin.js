@@ -54,6 +54,14 @@ function initLoginForm() {
   const form = document.getElementById('login-form');
   const errorEl = document.getElementById('login-error');
   
+  // Show a warning if opened as a local file rather than via server
+  if (window.location.protocol === 'file:') {
+    if (errorEl) {
+      errorEl.innerHTML = '<strong>Security Notice:</strong> You opened this page directly as a local file (<code>file://</code>).<br>Please start the backend server (run <code>npm start</code> in the project directory) and navigate to <a href="http://localhost:3000/admin" style="text-decoration: underline; color: inherit;">http://localhost:3000/admin</a> in your browser.';
+      errorEl.style.display = 'block';
+    }
+  }
+  
   // Toggle password visibility
   const togglePasswordBtn = document.getElementById('toggle-password');
   const passwordInput = document.getElementById('login-password');
