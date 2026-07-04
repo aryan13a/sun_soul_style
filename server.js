@@ -2,7 +2,12 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const sharp = require('sharp');
+let sharp;
+try {
+  sharp = require('sharp');
+} catch (e) {
+  console.warn("WARNING: sharp library could not be loaded. Image optimization will be bypassed. Details:", e.message);
+}
 const db = require('./db');
 
 const app = express();
@@ -312,22 +317,36 @@ app.post('/api/upload', requireAuth, upload.single('image'), async (req, res) =>
     
     const outputPath = path.join(uploadsDir, filename);
     
-    // Auto-optimize: resize to max 1600px width/height and compress to webp
-    await sharp(req.file.buffer)
-      .resize({
-        width: 1600,
-        height: 1600,
-        fit: 'inside',
-        withoutEnlargement: true // don't upscale small images
-      })
-      .webp({ quality: 80 })
-      .toFile(outputPath);
+    if (sharp) {
+      // Auto-optimize: resize to max 1600px width/height and compress to webp
+      await sharp(req.file.buffer)
+        .resize({
+          width: 1600,
+          height: 1600,
+          fit: 'inside',
+          withoutEnlargement: true // don't upscale small images
+        })
+        .webp({ quality: 80 })
+        .toFile(outputPath);
+        
+      res.json({
+        success: true,
+        url: `/uploads/${filename}`,
+        originalName: req.file.originalname
+      });
+    } else {
+      // Fallback: save original file without optimization
+      const originalExt = path.extname(req.file.originalname) || '.jpg';
+      const fallbackFilename = `img-${Date.now()}${originalExt}`;
+      const fallbackPath = path.join(uploadsDir, fallbackFilename);
+      fs.writeFileSync(fallbackPath, req.file.buffer);
       
-    res.json({
-      success: true,
-      url: `/uploads/${filename}`,
-      originalName: req.file.originalname
-    });
+      res.json({
+        success: true,
+        url: `/uploads/${fallbackFilename}`,
+        originalName: req.file.originalname
+      });
+    }
   } catch (err) {
     console.error("Image optimization failed:", err);
     res.status(500).json({ error: 'Image processing failed.' });
