@@ -110,6 +110,14 @@ const upload = multer({
 
 // ------------------ API ROUTES ------------------
 
+// Disable caching for all API routes
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 // 1. Authentication APIs
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
