@@ -31,13 +31,58 @@ app.use((req, res, next) => {
   next();
 });
 
-// Simple Session Store (in-memory for active sessions)
-const activeSessions = new Set();
+// Simple Session Store helper functions (stateless signature-based tokens)
+const getSecretKey = () => {
+  try {
+    return db.getData().admin.sessionSecret || 'sunsoulstyledefaultsecret';
+  } catch (e) {
+    return 'sunsoulstyledefaultsecret';
+  }
+};
+
+function generateToken(username) {
+  const payload = Buffer.from(JSON.stringify({
+    username,
+    exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+  })).toString('base64url');
+  
+  const signature = crypto
+    .createHmac('sha256', getSecretKey())
+    .update(payload)
+    .digest('base64url');
+    
+  return `${payload}.${signature}`;
+}
+
+function verifyToken(token) {
+  if (!token) return null;
+  const parts = token.split('.');
+  if (parts.length !== 2) return null;
+  
+  const [payload, signature] = parts;
+  
+  const expectedSignature = crypto
+    .createHmac('sha256', getSecretKey())
+    .update(payload)
+    .digest('base64url');
+    
+  if (signature !== expectedSignature) return null;
+  
+  try {
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    if (data.exp < Date.now()) return null; // expired
+    return data;
+  } catch (e) {
+    return null;
+  }
+}
 
 // Authentication check middleware (for API routes)
 function requireAuth(req, res, next) {
   const token = req.cookies.admin_token;
-  if (token && activeSessions.has(token)) {
+  const session = verifyToken(token);
+  if (session) {
+    req.adminSession = session;
     next();
   } else {
     res.status(401).json({ error: 'Unauthorized. Please log in.' });
@@ -71,11 +116,7 @@ app.post('/api/login', (req, res) => {
   const currentDb = db.getData();
   
   if (username === currentDb.admin.username && db.hashPassword(password) === currentDb.admin.passwordHash) {
-    // Generate a random token
-    const token = cryptoToken();
-    activeSessions.add(token);
-    
-    // Set cookie: HttpOnly, Max-Age 24 hours
+    const token = generateToken(username);
     res.setHeader('Set-Cookie', `admin_token=${token}; Path=/; HttpOnly; Max-Age=86400`);
     return res.json({ success: true, message: 'Logged in successfully' });
   }
@@ -84,17 +125,14 @@ app.post('/api/login', (req, res) => {
 });
 
 app.post('/api/logout', (req, res) => {
-  const token = req.cookies.admin_token;
-  if (token) {
-    activeSessions.delete(token);
-  }
   res.setHeader('Set-Cookie', `admin_token=; Path=/; HttpOnly; Max-Age=0`);
   res.json({ success: true, message: 'Logged out successfully' });
 });
 
 app.get('/api/auth-check', (req, res) => {
   const token = req.cookies.admin_token;
-  if (token && activeSessions.has(token)) {
+  const session = verifyToken(token);
+  if (session) {
     res.json({ authenticated: true });
   } else {
     res.json({ authenticated: false });

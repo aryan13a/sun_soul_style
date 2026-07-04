@@ -9,7 +9,8 @@ const DEFAULT_DB = {
   admin: {
     // Default password is 'admin123', hashed with sha256
     passwordHash: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // sha256 of 'admin123'
-    username: 'admin'
+    username: 'admin',
+    sessionSecret: 'sunsoulstyle_secret_session_key_2026'
   },
   siteInfo: {
     name: "Sun Soul Style",
