@@ -147,6 +147,11 @@ app.get('/api/auth-check', (req, res) => {
   }
 });
 
+// GET raw database backup (authenticated only)
+app.get('/api/raw-db', requireAuth, (req, res) => {
+  res.json(db.getData());
+});
+
 app.post('/api/change-password', requireAuth, (req, res) => {
   const { currentPassword, newPassword } = req.body;
   const currentDb = db.getData();

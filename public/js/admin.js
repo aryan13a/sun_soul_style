@@ -131,6 +131,39 @@ function initAdminDashboard() {
     });
   }
 
+  // 1.5. Setup download database backup button
+  const downloadDbBtn = document.getElementById('download-db-btn');
+  if (downloadDbBtn) {
+    downloadDbBtn.addEventListener('click', async () => {
+      try {
+        downloadDbBtn.textContent = 'Fetching database...';
+        downloadDbBtn.disabled = true;
+        const res = await fetch('/api/raw-db');
+        if (!res.ok) throw new Error("Failed to fetch database backup");
+        const data = await res.json();
+        
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "db.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        
+        downloadDbBtn.textContent = 'Downloaded!';
+        setTimeout(() => {
+          downloadDbBtn.textContent = 'Download Database Backup (db.json)';
+          downloadDbBtn.disabled = false;
+        }, 2000);
+      } catch (err) {
+        console.error("Failed to download database:", err);
+        alert("Error downloading database backup.");
+        downloadDbBtn.textContent = 'Download Database Backup (db.json)';
+        downloadDbBtn.disabled = false;
+      }
+    });
+  }
+
   // 2. Setup menu tabs switching
   const menuItems = document.querySelectorAll('.sidebar-menu-item');
   const panels = document.querySelectorAll('.tab-panel');
