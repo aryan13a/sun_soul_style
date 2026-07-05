@@ -262,7 +262,8 @@ async function loadOverviewStats() {
     const unreadMsgs = messages.filter(m => !m.read).length;
     
     document.getElementById('stat-projects-count').textContent = projects.length;
-    document.getElementById('stat-services-count').textContent = services.length;
+    const servicesEl = document.getElementById('stat-services-count');
+    if (servicesEl) servicesEl.textContent = services.length;
     document.getElementById('stat-inquiries-count').textContent = messages.length;
     document.getElementById('stat-unread-count').textContent = unreadMsgs;
   } catch (err) {
