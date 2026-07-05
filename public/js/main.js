@@ -629,12 +629,12 @@ async function loadContactPage() {
     // Contact Form Submission logic
     const form = document.getElementById('contact-form');
     const statusEl = document.getElementById('form-status');
+    const btnWhatsapp = document.getElementById('btn-submit-whatsapp');
     
     if (form && statusEl) {
-      form.addEventListener('submit', (e) => {
+      // 1. Normal submission to the backend API (goes to the admin dashboard inquiries box)
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        statusEl.className = 'form-status success';
-        statusEl.textContent = 'Opening WhatsApp to submit your inquiry...';
         
         const name = document.getElementById('contact-name').value;
         const email = document.getElementById('contact-email').value;
@@ -642,21 +642,69 @@ async function loadContactPage() {
         const budget = document.getElementById('contact-budget').value;
         const message = document.getElementById('contact-message').value;
         
-        const formattedText = `Hi Sun Soul Style! I'd like to submit an inquiry:\n\n` +
-                              `• Name: ${name}\n` +
-                              `• Email: ${email}\n` +
-                              `• Project Type: ${projectType}\n` +
-                              `• Estimated Budget: ${budget}\n` +
-                              `• Message/Space Details: ${message}`;
-                              
-        const waUrl = `https://wa.me/917073319692?text=${encodeURIComponent(formattedText)}`;
+        statusEl.className = 'form-status';
+        statusEl.style.color = 'var(--color-dark)';
+        statusEl.textContent = 'Sending your inquiry to the studio...';
         
-        setTimeout(() => {
-          window.open(waUrl, '_blank');
-          form.reset();
-          statusEl.textContent = '';
-        }, 1200);
+        try {
+          const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, projectType, budget, message })
+          });
+          const data = await res.json();
+          
+          if (res.ok && data.success) {
+            statusEl.className = 'form-status success';
+            statusEl.style.color = 'var(--color-olive)';
+            statusEl.textContent = 'Thank you! Your inquiry has been successfully submitted to our team.';
+            form.reset();
+          } else {
+            statusEl.className = 'form-status error';
+            statusEl.style.color = 'var(--color-terracotta)';
+            statusEl.textContent = data.error || 'Failed to submit inquiry. Please try again.';
+          }
+        } catch (err) {
+          console.error("Inquiry submission error:", err);
+          statusEl.className = 'form-status error';
+          statusEl.style.color = 'var(--color-terracotta)';
+          statusEl.textContent = 'Connection error. Please try again or use the WhatsApp option.';
+        }
       });
+      
+      // 2. WhatsApp submission (opens WhatsApp directly with prefilled text)
+      if (btnWhatsapp) {
+        btnWhatsapp.addEventListener('click', () => {
+          if (!form.reportValidity()) {
+            return; // Trigger native validation tooltips if fields are empty/invalid
+          }
+          
+          const name = document.getElementById('contact-name').value;
+          const email = document.getElementById('contact-email').value;
+          const projectType = document.getElementById('contact-project-type').value;
+          const budget = document.getElementById('contact-budget').value;
+          const message = document.getElementById('contact-message').value;
+          
+          statusEl.className = 'form-status success';
+          statusEl.style.color = 'var(--color-olive)';
+          statusEl.textContent = 'Opening WhatsApp to send your message...';
+          
+          const formattedText = `Hi Sun Soul Style! I'd like to submit an inquiry:\n\n` +
+                                `• Name: ${name}\n` +
+                                `• Email: ${email}\n` +
+                                `• Project Type: ${projectType}\n` +
+                                `• Estimated Budget: ${budget}\n` +
+                                `• Message/Space Details: ${message}`;
+                                
+          const waUrl = `https://wa.me/917073319692?text=${encodeURIComponent(formattedText)}`;
+          
+          setTimeout(() => {
+            window.open(waUrl, '_blank');
+            form.reset();
+            statusEl.textContent = '';
+          }, 1000);
+        });
+      }
     }
   } catch (err) {
     console.error("Error setting contact page details:", err);
