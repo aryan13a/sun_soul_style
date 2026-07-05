@@ -179,18 +179,23 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label for="home-video-url">Hero Video MP4 URL (Optional)</label>
+                <label for="home-video-url">Hero Video URL (Desktop/Landscape)</label>
                 <input type="text" id="home-video-url" placeholder="e.g. /assets/hero-video.mp4">
               </div>
               <div class="form-group">
-                <label>Hero Fallback Image (WebP/JPG)</label>
-                <div class="image-upload-wrapper">
-                  <div class="image-preview" id="home-fallback-img-preview">No Image</div>
-                  <input type="hidden" id="home-fallback-img">
-                  <div class="upload-btn-wrapper">
-                    <button type="button" class="btn-upload">Choose Image</button>
-                    <input type="file" accept="image/*" data-target="home-fallback-img" data-preview="home-fallback-img-preview">
-                  </div>
+                <label for="home-video-url-portrait">Hero Video URL (Mobile/Portrait - Optional)</label>
+                <input type="text" id="home-video-url-portrait" placeholder="e.g. /assets/hero-video-portrait.mp4">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 15px;">
+              <label>Hero Fallback Image (WebP/JPG)</label>
+              <div class="image-upload-wrapper">
+                <div class="image-preview" id="home-fallback-img-preview">No Image</div>
+                <input type="hidden" id="home-fallback-img">
+                <div class="upload-btn-wrapper">
+                  <button type="button" class="btn-upload">Choose Image</button>
+                  <input type="file" accept="image/*" data-target="home-fallback-img" data-preview="home-fallback-img-preview">
                 </div>
               </div>
             </div>

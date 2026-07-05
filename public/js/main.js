@@ -187,10 +187,13 @@ async function loadHomePage() {
       const heroMedia = document.getElementById('hero-media-container');
       if (heroMedia) {
         if (info.heroVideoUrl) {
+          const isMobile = window.innerWidth <= 768;
+          const selectedVideo = (isMobile && info.heroVideoUrlPortrait) ? info.heroVideoUrlPortrait : info.heroVideoUrl;
           heroMedia.innerHTML = `
             <video autoplay muted loop playsinline poster="${info.heroFallbackImg || '/assets/hero-interior.jpg'}">
-              <source src="${info.heroVideoUrl}" type="video/mp4">
-            </video>`;
+              <source src="${selectedVideo}" type="video/mp4">
+            </video>
+          `;
         } else {
           heroMedia.innerHTML = `<img src="${info.heroFallbackImg || '/assets/hero-interior.jpg'}" alt="Luxury Interior Home">`;
         }

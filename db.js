@@ -22,6 +22,7 @@ const DEFAULT_DB = {
     tagline: "Warm, elevated spaces shaped by natural light and organic textures.",
     philosophy: "We believe a home should feel like an extension of the soul. Our design language merges tactile simplicity with confident refinement — balancing cream boucle textures, raw walnut wood, and warm Mediterranean tones.",
     heroVideoUrl: "/assets/hero-video.mp4", // Optional looping video, will use hero image if empty
+    heroVideoUrlPortrait: "", // Optional looping video for mobile, will fall back to heroVideoUrl if empty
     heroFallbackImg: "/assets/hero-interior.jpg",
     bio: "Inspired by Mediterranean architecture, natural textiles, and the quiet luxury of clean lines, Keshavi Gupta creates spaces that feel both elevated and deeply lived-in. Based in Jaipur, Rajasthan, her boutique studio specializes in high-end residential interiors that honor natural light, organic materials, and hand-crafted details.",
     bioPhoto: "/assets/about_designer.jpg",

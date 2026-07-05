@@ -284,6 +284,7 @@ async function loadHomepageForm() {
     document.getElementById('home-tagline').value = info.tagline;
     document.getElementById('home-philosophy').value = info.philosophy;
     document.getElementById('home-video-url').value = info.heroVideoUrl || '';
+    document.getElementById('home-video-url-portrait').value = info.heroVideoUrlPortrait || '';
     document.getElementById('home-fallback-img').value = info.heroFallbackImg || '';
     updatePreviewBg('home-fallback-img-preview', info.heroFallbackImg);
     
@@ -314,6 +315,7 @@ async function loadHomepageForm() {
         tagline: document.getElementById('home-tagline').value,
         philosophy: document.getElementById('home-philosophy').value,
         heroVideoUrl: document.getElementById('home-video-url').value,
+        heroVideoUrlPortrait: document.getElementById('home-video-url-portrait').value,
         heroFallbackImg: document.getElementById('home-fallback-img').value,
         bio: document.getElementById('about-bio').value,
         bioPhoto: document.getElementById('about-bio-photo').value,
