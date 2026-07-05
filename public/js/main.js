@@ -190,7 +190,7 @@ async function loadHomePage() {
           const isMobile = window.innerWidth <= 768;
           const selectedVideo = (isMobile && info.heroVideoUrlPortrait) ? info.heroVideoUrlPortrait : info.heroVideoUrl;
           heroMedia.innerHTML = `
-            <video autoplay muted loop playsinline poster="${info.heroFallbackImg || '/assets/hero-interior.jpg'}">
+            <video autoplay muted loop playsinline style="width: 100% !important; height: 100% !important; object-fit: cover !important; position: absolute; top: 0; left: 0;" poster="${info.heroFallbackImg || '/assets/hero-interior.jpg'}">
               <source src="${selectedVideo}" type="video/mp4">
             </video>
           `;
