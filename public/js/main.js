@@ -91,6 +91,9 @@ function initCommonUX() {
 
   // 5. Global Site Info Injector (Injects name, logo and footer details)
   fetchSiteInfo();
+
+  // 6. Inject WhatsApp Floating Button
+  injectWhatsAppFloatingButton();
 }
 
 async function fetchSiteInfo() {
@@ -125,6 +128,27 @@ async function fetchSiteInfo() {
   } catch (err) {
     console.error("Error setting common site metadata:", err);
   }
+}
+
+function injectWhatsAppFloatingButton() {
+  if (document.querySelector('.whatsapp-float')) return; // Avoid duplicate injection
+  
+  const waBtn = document.createElement('a');
+  waBtn.href = "https://wa.me/917073319692?text=Hi%20Sun%20Soul%20Style,%20I'd%20like%20to%20inquire%20about%20your%20interior%20design%20services.";
+  waBtn.target = "_blank";
+  waBtn.rel = "noopener";
+  waBtn.className = "whatsapp-float";
+  waBtn.setAttribute('aria-label', 'Chat on WhatsApp');
+  waBtn.innerHTML = `
+    <svg class="whatsapp-icon-svg" viewBox="0 0 24 24">
+      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.528 2.016 14.07 1 11.996 1c-5.44 0-9.866 4.372-9.87 9.802 0 1.714.47 3.387 1.357 4.847L2.462 21.03l5.59-1.464l-.405-.412zm11.393-4.524c-.3-.15-1.777-.878-2.052-.978-.275-.1-.475-.15-.675.15-.2.3-.775.978-.95 1.178-.175.2-.35.225-.65.075-1.025-.513-1.74-.897-2.422-2.063-.18-.3-.18-.546-.03-.696.136-.136.3-.35.45-.525.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.675-1.625-.925-2.225-.244-.589-.491-.51-.675-.52l-.575-.01c-.2 0-.525.075-.8 1.05-.275.975-.825 2.425-.825 2.5 0 .075.075.375.3.6 1.838 1.838 3.514 2.188 4.414 2.45.625.18.9.2.1.2.6.2.775-.375.95-.575s.35-.45.45-.675c.1-.225.05-.425-.025-.575z"/>
+    </svg>
+  `;
+  document.body.appendChild(waBtn);
+  
+  // Register custom cursor hover event
+  waBtn.addEventListener('mouseenter', () => document.body.classList.add('hover-active'));
+  waBtn.addEventListener('mouseleave', () => document.body.classList.remove('hover-active'));
 }
 
 // ------------------ PAGE ROUTER DISPATCH ------------------
