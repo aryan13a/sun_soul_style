@@ -1194,10 +1194,10 @@ footer {
   gap: 20px;
 }
 .footer-brand .logo {
-  color: var(--color-warm-white);
+  color: inherit;
 }
 .footer-brand .logo-img {
-  filter: invert(1) brightness(0.9);
+  filter: none;
 }
 .footer-tagline {
   font-weight: 200;

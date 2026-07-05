@@ -18,16 +18,16 @@ const DEFAULT_DB = {
   },
   siteInfo: {
     name: "Sun Soul Style",
-    designerName: "Elena Rostova",
+    designerName: "Keshavi Gupta",
     tagline: "Warm, elevated spaces shaped by natural light and organic textures.",
     philosophy: "We believe a home should feel like an extension of the soul. Our design language merges tactile simplicity with confident refinement — balancing cream boucle textures, raw walnut wood, and warm Mediterranean tones.",
     heroVideoUrl: "/assets/hero-video.mp4", // Optional looping video, will use hero image if empty
     heroFallbackImg: "/assets/hero-interior.jpg",
-    bio: "Inspired by Mediterranean architecture, natural textiles, and the quiet luxury of clean lines, Elena Rostova creates spaces that feel both elevated and deeply lived-in. Based in Ojai, California, her boutique studio specializes in high-end residential interiors that honor natural light, organic materials, and hand-crafted details.",
+    bio: "Inspired by Mediterranean architecture, natural textiles, and the quiet luxury of clean lines, Keshavi Gupta creates spaces that feel both elevated and deeply lived-in. Based in Jaipur, Rajasthan, her boutique studio specializes in high-end residential interiors that honor natural light, organic materials, and hand-crafted details.",
     bioPhoto: "/assets/about_designer.jpg",
     contactEmail: "hello@sunsoulstyle.com",
     contactPhone: "+91 70733 19692",
-    studioLocation: "Ojai, California",
+    studioLocation: "Jaipur, Rajasthan",
     instagram: "@sunsoulstyle",
     responseTimeNote: "We typically respond to new inquiries within 2-3 business days. We look forward to shaping your space."
   },
@@ -157,13 +157,13 @@ const DEFAULT_DB = {
       id: "test-1",
       clientName: "Sarah & Marcus K.",
       projectTitle: "The Ojai Hacienda",
-      quote: "Working with Elena was an absolute dream. She understood our vision before we even knew how to articulate it. Every single room feels incredibly warm, tactile, and peaceful."
+      quote: "Working with Keshavi was an absolute dream. She understood our vision before we even knew how to articulate it. Every single room feels incredibly warm, tactile, and peaceful."
     },
     {
       id: "test-2",
       clientName: "Claire L.",
       projectTitle: "The Walnut Kitchen",
-      quote: "The attention to detail in our kitchen is unbelievable. Elena managed to make a highly functional space feel like an artistic masterpiece. We spend all our time here now."
+      quote: "The attention to detail in our kitchen is unbelievable. Keshavi managed to make a highly functional space feel like an artistic masterpiece. We spend all our time here now."
     }
   ],
   messages: []
