@@ -293,10 +293,88 @@ function getData() {
   }
 }
 
+function extractImageUrls(dbState) {
+  const urls = new Set();
+  if (!dbState) return urls;
+
+  // Extract from siteInfo
+  if (dbState.siteInfo) {
+    const si = dbState.siteInfo;
+    if (si.heroVideoUrl) urls.add(si.heroVideoUrl);
+    if (si.heroVideoUrlPortrait) urls.add(si.heroVideoUrlPortrait);
+    if (si.heroFallbackImg) urls.add(si.heroFallbackImg);
+    if (si.bioPhoto) urls.add(si.bioPhoto);
+  }
+
+  // Extract from projects
+  if (Array.isArray(dbState.projects)) {
+    dbState.projects.forEach(p => {
+      if (p.coverImage) urls.add(p.coverImage);
+      if (p.beforeImage) urls.add(p.beforeImage);
+      if (p.afterImage) urls.add(p.afterImage);
+      if (Array.isArray(p.gallery)) {
+        p.gallery.forEach(url => {
+          if (url) urls.add(url);
+        });
+      }
+    });
+  }
+
+  return urls;
+}
+
+function isVercelBlobUrl(url) {
+  return typeof url === 'string' && url.startsWith('https://') && url.includes('.public.blob.vercel-storage.com');
+}
+
+async function garbageCollectBlobs(oldState, newState) {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return;
+  
+  try {
+    const oldUrls = extractImageUrls(oldState);
+    const newUrls = extractImageUrls(newState);
+    
+    // Find URLs that are in old state but NOT in new state
+    const orphanUrls = [];
+    for (const url of oldUrls) {
+      if (!newUrls.has(url) && isVercelBlobUrl(url)) {
+        orphanUrls.push(url);
+      }
+    }
+    
+    if (orphanUrls.length > 0) {
+      console.log(`Garbage Collection: Found ${orphanUrls.length} orphan Vercel Blob URLs to delete:`, orphanUrls);
+      const { del } = require('@vercel/blob');
+      
+      await del(orphanUrls, {
+        token: process.env.BLOB_READ_WRITE_TOKEN
+      });
+      console.log("Garbage Collection: Orphan blobs deleted successfully.");
+    }
+  } catch (err) {
+    console.error("Garbage Collection failed:", err);
+  }
+}
+
 function saveData(data) {
+  // Get current DB state before overwriting
+  let oldData = null;
+  try {
+    if (fs.existsSync(DB_PATH)) {
+      oldData = JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'));
+    }
+  } catch (err) {
+    // Ignore error
+  }
+
   const tempPath = `${DB_PATH}.tmp`;
   fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), 'utf-8');
   fs.renameSync(tempPath, DB_PATH);
+
+  // Trigger garbage collection for Vercel Blob
+  if (oldData && process.env.BLOB_READ_WRITE_TOKEN) {
+    garbageCollectBlobs(oldData, data);
+  }
 
   // Trigger background sync to Vercel Blob in production
   if (process.env.BLOB_READ_WRITE_TOKEN) {
