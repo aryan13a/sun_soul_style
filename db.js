@@ -29,7 +29,7 @@ const DEFAULT_DB = {
     contactEmail: "hello@sunsoulstyle.com",
     contactPhone: "+91 70733 19692",
     studioLocation: "Jaipur, Rajasthan",
-    instagram: "@sunsoulstyle",
+    instagram: "@sun_soul_style",
     responseTimeNote: "We typically respond to new inquiries within 2-3 business days. We look forward to shaping your space."
   },
   projects: [
