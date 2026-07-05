@@ -149,7 +149,7 @@
     {
       "id": "service-1",
       "name": "Full-Service Interior Design",
-      "price": "Starting at $7,500",
+      "price": "Starting at ₹5,00,000",
       "description": "From initial concept planning to construction documents and final styling, we handle every detail of your renovation or new build.",
       "deliverables": [
         "Space planning and furniture layouts",
@@ -161,7 +161,7 @@
     {
       "id": "service-2",
       "name": "E-Design & Space Curation",
-      "price": "Flat Fee $1,800 / room",
+      "price": "Flat Fee ₹1,50,000 / room",
       "description": "A flexible, virtual design service providing you with a custom blueprint to execute at your own pace.",
       "deliverables": [
         "Digital concept board and color palette",
@@ -173,7 +173,7 @@
     {
       "id": "service-3",
       "name": "Design Consultation",
-      "price": "$350 / hour",
+      "price": "₹25,000 / hour",
       "description": "A focused, one-on-one session to solve specific design challenges, select paint colors, or refine layouts.",
       "deliverables": [
         "Up to 2 hours in-person or virtual consultation",
