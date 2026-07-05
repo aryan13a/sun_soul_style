@@ -191,6 +191,26 @@ function initAdminDashboard() {
     });
   });
 
+  // 2.5. Mobile sidebar menu toggle logic
+  const toggleBtn = document.getElementById('sidebar-toggle-btn');
+  const sidebar = document.querySelector('.admin-sidebar');
+  if (toggleBtn && sidebar) {
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      toggleBtn.classList.toggle('active');
+    });
+    
+    // Auto-close sidebar on menu click (only on mobile screens)
+    menuItems.forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('open');
+          toggleBtn.classList.remove('active');
+        }
+      });
+    });
+  }
+
   // 3. Initialize file upload event listeners globally
   initGlobalUploads();
 
