@@ -382,38 +382,42 @@ app.post('/api/upload', requireAuth, upload.single('image'), async (req, res) =>
     const outputPath = path.join(uploadsDir, filename);
     
     if (sharp) {
-      // Auto-optimize: resize to max 1600px width/height and compress to webp
-      await sharp(req.file.buffer)
-        .resize({
-          width: 1600,
-          height: 1600,
-          fit: 'inside',
-          withoutEnlargement: true // don't upscale small images
-        })
-        .webp({ quality: 80 })
-        .toFile(outputPath);
-        
-      res.json({
-        success: true,
-        url: `/uploads/${filename}`,
-        originalName: req.file.originalname
-      });
-    } else {
-      // Fallback: save original file without optimization
-      const originalExt = path.extname(req.file.originalname) || '.jpg';
-      const fallbackFilename = `img-${Date.now()}${originalExt}`;
-      const fallbackPath = path.join(uploadsDir, fallbackFilename);
-      fs.writeFileSync(fallbackPath, req.file.buffer);
-      
-      res.json({
-        success: true,
-        url: `/uploads/${fallbackFilename}`,
-        originalName: req.file.originalname
-      });
+      try {
+        // Auto-optimize: resize to max 1600px width/height and compress to webp
+        await sharp(req.file.buffer)
+          .resize({
+            width: 1600,
+            height: 1600,
+            fit: 'inside',
+            withoutEnlargement: true // don't upscale small images
+          })
+          .webp({ quality: 80 })
+          .toFile(outputPath);
+          
+        return res.json({
+          success: true,
+          url: `/uploads/${filename}`,
+          originalName: req.file.originalname
+        });
+      } catch (sharpError) {
+        console.warn("Sharp optimization failed, falling back to original save:", sharpError.message);
+      }
     }
+    
+    // Fallback: save original file without optimization
+    const originalExt = path.extname(req.file.originalname) || '.jpg';
+    const fallbackFilename = `img-${Date.now()}${originalExt}`;
+    const fallbackPath = path.join(uploadsDir, fallbackFilename);
+    fs.writeFileSync(fallbackPath, req.file.buffer);
+    
+    res.json({
+      success: true,
+      url: `/uploads/${fallbackFilename}`,
+      originalName: req.file.originalname
+    });
   } catch (err) {
-    console.error("Image optimization failed:", err);
-    res.status(500).json({ error: 'Image processing failed.' });
+    console.error("Image upload failed completely:", err);
+    res.status(500).json({ error: 'Image upload failed.' });
   }
 });
 
@@ -433,6 +437,16 @@ app.get('/uploads/:filename', (req, res) => {
   } else {
     res.status(404).send('File not found');
   }
+});
+
+// Express Error Handler for Multer and other errors
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ error: `Upload error: ${err.message}` });
+  } else if (err) {
+    return res.status(400).json({ error: err.message });
+  }
+  next();
 });
 
 // ------------------ PAGE SERVING ------------------
