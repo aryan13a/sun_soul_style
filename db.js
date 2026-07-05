@@ -234,7 +234,12 @@ async function initDb() {
   try {
     console.log("Initializing database from Vercel Blob...");
     const { list } = require('@vercel/blob');
-    const listResult = await list({ token: process.env.BLOB_READ_WRITE_TOKEN });
+    // Limit list operation to just db.json to avoid pagination/limit issues
+    const listResult = await list({
+      prefix: 'db.json',
+      limit: 1,
+      token: process.env.BLOB_READ_WRITE_TOKEN
+    });
     const dbBlob = listResult.blobs.find(b => b.pathname === 'db.json');
     
     let initialData = DEFAULT_DB;
@@ -263,12 +268,18 @@ async function initDb() {
     fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2), 'utf-8');
     console.log("Database initialized successfully in /tmp/db.json");
   } catch (err) {
-    console.error("Vercel Blob initialization failed, using default db.json:", err);
-    // Fallback: write defaults to /tmp/db.json so server can still function
+    console.error("Vercel Blob initialization failed, using local/fallback:", err);
+    // Fallback: only write defaults to /tmp/db.json if it doesn't already exist
     try {
       const tmpDir = path.dirname(DB_PATH);
       if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
-      fs.writeFileSync(DB_PATH, JSON.stringify(DEFAULT_DB, null, 2), 'utf-8');
+      if (!fs.existsSync(DB_PATH)) {
+        let fallbackData = DEFAULT_DB;
+        if (fs.existsSync(BUNDLE_DB_PATH)) {
+          fallbackData = JSON.parse(fs.readFileSync(BUNDLE_DB_PATH, 'utf-8'));
+        }
+        fs.writeFileSync(DB_PATH, JSON.stringify(fallbackData, null, 2), 'utf-8');
+      }
     } catch (fsErr) {
       console.error("Failed to write fallback database locally:", fsErr);
     }
@@ -287,8 +298,14 @@ function getData() {
     const content = fs.readFileSync(DB_PATH, 'utf-8');
     return JSON.parse(content);
   } catch (err) {
-    console.error("Error reading database, resetting to default...", err);
-    saveData(DEFAULT_DB);
+    console.error("Error reading database at DB_PATH, attempting bundle fallback...", err);
+    try {
+      if (fs.existsSync(BUNDLE_DB_PATH)) {
+        return JSON.parse(fs.readFileSync(BUNDLE_DB_PATH, 'utf-8'));
+      }
+    } catch (bundleErr) {
+      console.error("Failed to read bundle database:", bundleErr);
+    }
     return DEFAULT_DB;
   }
 }
