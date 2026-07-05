@@ -203,7 +203,7 @@ function initAdminDashboard() {
     // Auto-close sidebar on menu click (only on mobile screens)
     menuItems.forEach(item => {
       item.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth < 1024) {
           sidebar.classList.remove('open');
           toggleBtn.classList.remove('active');
         }
