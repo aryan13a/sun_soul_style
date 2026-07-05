@@ -53,7 +53,7 @@ const getSecretKey = () => {
 function generateToken(username) {
   const payload = Buffer.from(JSON.stringify({
     username,
-    exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+    exp: Date.now() + 2 * 60 * 60 * 1000 // 2 hours absolute expiry
   })).toString('base64url');
   
   const signature = crypto
@@ -135,7 +135,8 @@ app.post('/api/login', (req, res) => {
   
   if (username === currentDb.admin.username && db.hashPassword(password) === currentDb.admin.passwordHash) {
     const token = generateToken(username);
-    res.setHeader('Set-Cookie', `admin_token=${token}; Path=/; HttpOnly; Max-Age=86400`);
+    // Remove Max-Age to make it a true session cookie (deleted on browser close)
+    res.setHeader('Set-Cookie', `admin_token=${token}; Path=/; HttpOnly`);
     return res.json({ success: true, message: 'Logged in successfully' });
   }
   
@@ -172,6 +173,96 @@ app.post('/api/change-password', requireAuth, (req, res) => {
     return res.json({ success: true, message: 'Password updated successfully' });
   }
   res.status(400).json({ error: 'Incorrect current password' });
+});
+
+// Forgot Password Request Flow
+app.post('/api/forgot-password', async (req, res) => {
+  const { username } = req.body;
+  const currentDb = db.getData();
+  
+  // Verify that the requested user is the admin
+  if (!username || username !== currentDb.admin.username) {
+    // For security reasons, don't explicitly say the username is invalid
+    return res.json({ success: true, message: 'If the username is correct, a password reset link has been sent.' });
+  }
+  
+  try {
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiry = Date.now() + 60 * 60 * 1000; // 1 hour expiry
+    
+    currentDb.admin.resetToken = token;
+    currentDb.admin.resetTokenExpiry = expiry;
+    db.saveData(currentDb);
+    
+    const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    const host = req.get('host');
+    const resetLink = `${protocol}://${host}/reset-password.html?token=${token}`;
+    
+    const contactEmail = currentDb.siteInfo.contactEmail || 'hello@sunsoulstyle.com';
+    
+    if (process.env.RESEND_API_KEY) {
+      const { Resend } = require('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      
+      await resend.emails.send({
+        from: 'Sun Soul Style CMS <onboarding@resend.dev>',
+        to: contactEmail,
+        subject: 'Sun Soul Style - Admin Password Reset Request',
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #EBE6DF; background: #FFFDFB;">
+            <h2 style="font-family: serif; font-style: italic; color: #2A2421; font-weight: 300;">Password Reset Request</h2>
+            <p style="color: #2A2421; font-size: 1rem; line-height: 1.6;">You requested a password reset for the Sun Soul Style Admin CMS.</p>
+            <p style="color: #2A2421; font-size: 1rem; line-height: 1.6;">Click the link below to set a new password (valid for 1 hour):</p>
+            <div style="margin: 30px 0;">
+              <a href="${resetLink}" target="_blank" style="background-color: #5C4033; color: #FFFDFB; padding: 14px 24px; text-decoration: none; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; display: inline-block;">Reset Password</a>
+            </div>
+            <p style="color: #2A2421; font-size: 0.9rem; opacity: 0.8; word-break: break-all;">Or copy and paste this URL into your browser: <br><a href="${resetLink}" style="color: #C86B55;">${resetLink}</a></p>
+            <hr style="border: none; border-top: 1px solid #EBE6DF; margin: 30px 0;">
+            <p style="font-size: 0.8rem; opacity: 0.6; color: #2A2421;">If you did not request this, you can ignore this email. Your password remains unchanged.</p>
+          </div>
+        `
+      });
+      console.log(`Password reset email successfully sent to ${contactEmail}`);
+    } else {
+      console.warn("WARNING: RESEND_API_KEY environment variable is not set! Reset link printed to console instead:");
+      console.warn(`👉 PASSWORD RESET LINK: ${resetLink}`);
+    }
+    
+    res.json({ success: true, message: 'If the username is correct, a password reset link has been sent.' });
+  } catch (err) {
+    console.error("Forgot password request failed:", err);
+    res.status(500).json({ error: 'Failed to send password reset request. Please check server logs.' });
+  }
+});
+
+// Validate Token & Reset Password Endpoint
+app.post('/api/reset-password', (req, res) => {
+  const { token, newPassword } = req.body;
+  
+  if (!token || !newPassword) {
+    return res.status(400).json({ error: 'Token and new password are required.' });
+  }
+  
+  const currentDb = db.getData();
+  
+  if (
+    currentDb.admin.resetToken &&
+    currentDb.admin.resetToken === token &&
+    currentDb.admin.resetTokenExpiry &&
+    currentDb.admin.resetTokenExpiry > Date.now()
+  ) {
+    // Hash and update the password
+    currentDb.admin.passwordHash = db.hashPassword(newPassword);
+    // Invalidate the reset token immediately
+    currentDb.admin.resetToken = null;
+    currentDb.admin.resetTokenExpiry = null;
+    
+    db.saveData(currentDb);
+    
+    return res.json({ success: true, message: 'Password has been reset successfully. Please log in with your new password.' });
+  }
+  
+  res.status(400).json({ error: 'Invalid or expired password reset token.' });
 });
 
 // 2. Site Info APIs

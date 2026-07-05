@@ -7,6 +7,22 @@
   <link rel="icon" type="image/svg+xml" href="/assets/logo.png">
   <link rel="stylesheet" href="/css/admin.css">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script>
+    // Guard: Prevent flash of unauthenticated dashboard contents
+    document.documentElement.style.display = 'none';
+    fetch('/api/auth-check')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.authenticated) {
+          window.location.href = '/login.html';
+        } else {
+          document.documentElement.style.display = '';
+        }
+      })
+      .catch(() => {
+        window.location.href = '/login.html';
+      });
+  </script>
 </head>
 <body>
 

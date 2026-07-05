@@ -1146,3 +1146,14 @@ function updatePreviewBg(previewId, imgUrl) {
     preview.innerHTML = 'No Image';
   }
 }
+
+// Explicit logout on window / tab close using navigator.sendBeacon
+const handleTabClose = () => {
+  const isLoginPage = window.location.pathname.includes('login.html');
+  if (!isLoginPage) {
+    navigator.sendBeacon('/api/logout');
+  }
+};
+
+window.addEventListener('beforeunload', handleTabClose);
+window.addEventListener('pagehide', handleTabClose);
