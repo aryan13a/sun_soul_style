@@ -25,7 +25,7 @@ const DEFAULT_DB = {
     heroVideoUrlPortrait: "", // Optional looping video for mobile, will fall back to heroVideoUrl if empty
     heroFallbackImg: "/assets/hero-interior.jpg",
     bio: "Inspired by Mediterranean architecture, natural textiles, and the quiet luxury of clean lines, Keshavi Gupta creates spaces that feel both elevated and deeply lived-in. Based in Jaipur, Rajasthan, her boutique studio specializes in high-end residential interiors that honor natural light, organic materials, and hand-crafted details.",
-    bioPhoto: "/assets/about_designer.jpg",
+    bioPhoto: "/assets/kp.png",
     contactEmail: "hello@sunsoulstyle.com",
     contactPhone: "+91 70733 19692",
     studioLocation: "Jaipur, Rajasthan",
