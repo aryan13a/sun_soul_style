@@ -50,10 +50,12 @@ const getSecretKey = () => {
   }
 };
 
-function generateToken(username) {
+function generateToken(username, remember = false) {
+  // 30 days if remember is checked, otherwise 2 hours
+  const duration = remember ? 30 * 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000;
   const payload = Buffer.from(JSON.stringify({
     username,
-    exp: Date.now() + 2 * 60 * 60 * 1000 // 2 hours absolute expiry
+    exp: Date.now() + duration
   })).toString('base64url');
   
   const signature = crypto
@@ -130,13 +132,18 @@ app.use('/api', (req, res, next) => {
 
 // 1. Authentication APIs
 app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, remember } = req.body;
   const currentDb = db.getData();
   
   if (username === currentDb.admin.username && db.hashPassword(password) === currentDb.admin.passwordHash) {
-    const token = generateToken(username);
-    // Remove Max-Age to make it a true session cookie (deleted on browser close)
-    res.setHeader('Set-Cookie', `admin_token=${token}; Path=/; HttpOnly`);
+    const token = generateToken(username, remember);
+    if (remember) {
+      // 30 days persistent cookie
+      res.setHeader('Set-Cookie', `admin_token=${token}; Path=/; HttpOnly; Max-Age=2592000; SameSite=Lax`);
+    } else {
+      // Session cookie (deleted on browser close)
+      res.setHeader('Set-Cookie', `admin_token=${token}; Path=/; HttpOnly; SameSite=Lax`);
+    }
     return res.json({ success: true, message: 'Logged in successfully' });
   }
   
@@ -144,7 +151,7 @@ app.post('/api/login', (req, res) => {
 });
 
 app.post('/api/logout', (req, res) => {
-  res.setHeader('Set-Cookie', `admin_token=; Path=/; HttpOnly; Max-Age=0`);
+  res.setHeader('Set-Cookie', `admin_token=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax`);
   res.json({ success: true, message: 'Logged out successfully' });
 });
 

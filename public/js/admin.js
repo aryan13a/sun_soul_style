@@ -80,17 +80,19 @@ function initLoginForm() {
       
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
+      const remember = document.getElementById('login-remember')?.checked || false;
       
       try {
         const res = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ username, password, remember })
         });
         
         const result = await res.json();
         
         if (res.ok && result.success) {
+          localStorage.setItem('remember_device', remember ? 'true' : 'false');
           window.location.href = '/admin';
         } else {
           if (errorEl) {
@@ -123,6 +125,7 @@ function initAdminDashboard() {
     logoutBtn.addEventListener('click', async (e) => {
       e.preventDefault();
       try {
+        localStorage.removeItem('remember_device');
         await fetch('/api/logout', { method: 'POST' });
         window.location.href = '/login.html';
       } catch (err) {
@@ -1151,7 +1154,8 @@ function updatePreviewBg(previewId, imgUrl) {
 // Explicit logout on window / tab close using navigator.sendBeacon
 const handleTabClose = () => {
   const isLoginPage = window.location.pathname.includes('login.html');
-  if (!isLoginPage) {
+  const rememberDevice = localStorage.getItem('remember_device') === 'true';
+  if (!isLoginPage && !rememberDevice) {
     navigator.sendBeacon('/api/logout');
   }
 };
