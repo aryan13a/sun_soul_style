@@ -8,6 +8,10 @@ const DB_PATH = process.env.VERCEL
   ? path.join('/tmp', 'db.json')
   : BUNDLE_DB_PATH;
 
+if (process.env.VERCEL && !process.env.BLOB_READ_WRITE_TOKEN) {
+  console.error("CRITICAL ERROR: BLOB_READ_WRITE_TOKEN environment variable is missing in Vercel environment! Database persistence is DISABLED. Edits will stay in ephemeral /tmp/db.json and reset on cold start.");
+}
+
 // Default initial database state
 const DEFAULT_DB = {
   admin: {

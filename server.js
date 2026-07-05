@@ -370,51 +370,97 @@ app.post('/api/upload', requireAuth, upload.single('image'), async (req, res) =>
   
   try {
     const filename = `img-${Date.now()}.webp`;
-    const uploadsDir = process.env.VERCEL
-      ? path.join('/tmp', 'uploads')
-      : path.join(__dirname, 'public', 'uploads');
     
-    // Ensure uploads directory exists
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-    
-    const outputPath = path.join(uploadsDir, filename);
-    
-    if (sharp) {
-      try {
-        // Auto-optimize: resize to max 1600px width/height and compress to webp
-        await sharp(req.file.buffer)
-          .resize({
-            width: 1600,
-            height: 1600,
-            fit: 'inside',
-            withoutEnlargement: true // don't upscale small images
-          })
-          .webp({ quality: 80 })
-          .toFile(outputPath);
-          
-        return res.json({
-          success: true,
-          url: `/uploads/${filename}`,
-          originalName: req.file.originalname
-        });
-      } catch (sharpError) {
-        console.warn("Sharp optimization failed, falling back to original save:", sharpError.message);
+    // Check if running on Vercel
+    if (process.env.VERCEL) {
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        console.error("CRITICAL ERROR: BLOB_READ_WRITE_TOKEN is missing in Vercel environment! Cannot upload image to Vercel Blob.");
+        return res.status(500).json({ error: 'Blob storage write token is missing.' });
       }
+      
+      const { put } = require('@vercel/blob');
+      let uploadBuffer = req.file.buffer;
+      let finalFilename = filename;
+      
+      if (sharp) {
+        try {
+          // Auto-optimize: resize to max 1600px width/height and compress to webp
+          uploadBuffer = await sharp(req.file.buffer)
+            .resize({
+              width: 1600,
+              height: 1600,
+              fit: 'inside',
+              withoutEnlargement: true
+            })
+            .webp({ quality: 80 })
+            .toBuffer();
+        } catch (sharpError) {
+          console.warn("Sharp optimization failed, falling back to original upload:", sharpError.message);
+          const originalExt = path.extname(req.file.originalname) || '.jpg';
+          finalFilename = `img-${Date.now()}${originalExt}`;
+        }
+      } else {
+        const originalExt = path.extname(req.file.originalname) || '.jpg';
+        finalFilename = `img-${Date.now()}${originalExt}`;
+      }
+      
+      // Upload directly to Vercel Blob storage
+      const blob = await put(`uploads/${finalFilename}`, uploadBuffer, {
+        access: 'public',
+        token: process.env.BLOB_READ_WRITE_TOKEN
+      });
+      
+      return res.json({
+        success: true,
+        url: blob.url,
+        originalName: req.file.originalname
+      });
+    } else {
+      // Local development (!process.env.VERCEL)
+      const uploadsDir = path.join(__dirname, 'public', 'uploads');
+      
+      // Ensure uploads directory exists
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+      
+      const outputPath = path.join(uploadsDir, filename);
+      
+      if (sharp) {
+        try {
+          // Auto-optimize: resize to max 1600px width/height and compress to webp
+          await sharp(req.file.buffer)
+            .resize({
+              width: 1600,
+              height: 1600,
+              fit: 'inside',
+              withoutEnlargement: true
+            })
+            .webp({ quality: 80 })
+            .toFile(outputPath);
+            
+          return res.json({
+            success: true,
+            url: `/uploads/${filename}`,
+            originalName: req.file.originalname
+          });
+        } catch (sharpError) {
+          console.warn("Sharp optimization failed, falling back to original save:", sharpError.message);
+        }
+      }
+      
+      // Fallback: save original file without optimization
+      const originalExt = path.extname(req.file.originalname) || '.jpg';
+      const fallbackFilename = `img-${Date.now()}${originalExt}`;
+      const fallbackPath = path.join(uploadsDir, fallbackFilename);
+      fs.writeFileSync(fallbackPath, req.file.buffer);
+      
+      return res.json({
+        success: true,
+        url: `/uploads/${fallbackFilename}`,
+        originalName: req.file.originalname
+      });
     }
-    
-    // Fallback: save original file without optimization
-    const originalExt = path.extname(req.file.originalname) || '.jpg';
-    const fallbackFilename = `img-${Date.now()}${originalExt}`;
-    const fallbackPath = path.join(uploadsDir, fallbackFilename);
-    fs.writeFileSync(fallbackPath, req.file.buffer);
-    
-    res.json({
-      success: true,
-      url: `/uploads/${fallbackFilename}`,
-      originalName: req.file.originalname
-    });
   } catch (err) {
     console.error("Image upload failed completely:", err);
     res.status(500).json({ error: 'Image upload failed.' });
