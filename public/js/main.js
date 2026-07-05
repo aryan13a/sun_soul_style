@@ -141,7 +141,7 @@ function injectWhatsAppFloatingButton() {
   waBtn.setAttribute('aria-label', 'Chat on WhatsApp');
   waBtn.innerHTML = `
     <svg class="whatsapp-icon-svg" viewBox="0 0 24 24">
-      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.528 2.016 14.07 1 11.996 1c-5.44 0-9.866 4.372-9.87 9.802 0 1.714.47 3.387 1.357 4.847L2.462 21.03l5.59-1.464l-.405-.412zm11.393-4.524c-.3-.15-1.777-.878-2.052-.978-.275-.1-.475-.15-.675.15-.2.3-.775.978-.95 1.178-.175.2-.35.225-.65.075-1.025-.513-1.74-.897-2.422-2.063-.18-.3-.18-.546-.03-.696.136-.136.3-.35.45-.525.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.675-1.625-.925-2.225-.244-.589-.491-.51-.675-.52l-.575-.01c-.2 0-.525.075-.8 1.05-.275.975-.825 2.425-.825 2.5 0 .075.075.375.3.6 1.838 1.838 3.514 2.188 4.414 2.45.625.18.9.2.1.2.6.2.775-.375.95-.575s.35-.45.45-.675c.1-.225.05-.425-.025-.575z"/>
+      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.431 2.522 1.222 3.504l-.8 2.923 2.993-.785a5.737 5.737 0 0 0 2.352.527h.003c3.18 0 5.764-2.586 5.765-5.766.002-3.18-2.583-5.769-5.767-5.769zm3.385 8.167c-.15.42-.77.77-1.07.82-.26.04-.6.06-1.32-.23-1.6-.66-2.63-2.29-2.71-2.4-.08-.11-.69-.92-.69-1.747 0-.83.43-1.237.59-1.404.16-.167.35-.209.47-.209.12 0 .24 0 .34.004.11.002.25-.004.39.333.15.353.49 1.206.53 1.29.04.083.07.18.01.302-.06.12-.09.19-.18.3-.09.11-.19.24-.27.327-.1.104-.2.217-.08.413.11.196.5.82 1.07 1.328.74.66 1.37.86 1.56.96.19.1.3.085.41-.04.11-.128.48-.562.61-.75.13-.19.27-.156.45-.09.19.066 1.18.556 1.38.658.21.103.35.15.4.24.05.09.05.523-.1.942zM12 2C6.48 2 2 6.48 2 12c0 2.17.7 4.19 1.9 5.86L2 22l4.28-1.12C7.9 22.06 9.88 22.67 12 22.67c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18.67c-1.89 0-3.65-.54-5.14-1.48l-.37-.23-2.53.66.68-2.48-.26-.41c-1.03-1.63-1.63-3.55-1.63-5.61 0-4.96 4.04-9 9-9s9 4.04 9 9-4.04 9-9 9z"/>
     </svg>
   `;
   document.body.appendChild(waBtn);
@@ -631,41 +631,31 @@ async function loadContactPage() {
     const statusEl = document.getElementById('form-status');
     
     if (form && statusEl) {
-      form.addEventListener('submit', async (e) => {
+      form.addEventListener('submit', (e) => {
         e.preventDefault();
-        statusEl.className = 'form-status';
-        statusEl.textContent = 'Sending inquiry...';
+        statusEl.className = 'form-status success';
+        statusEl.textContent = 'Opening WhatsApp to submit your inquiry...';
         
-        const formData = {
-          name: document.getElementById('contact-name').value,
-          email: document.getElementById('contact-email').value,
-          projectType: document.getElementById('contact-project-type').value,
-          budget: document.getElementById('contact-budget').value,
-          message: document.getElementById('contact-message').value
-        };
+        const name = document.getElementById('contact-name').value;
+        const email = document.getElementById('contact-email').value;
+        const projectType = document.getElementById('contact-project-type').value;
+        const budget = document.getElementById('contact-budget').value;
+        const message = document.getElementById('contact-message').value;
         
-        try {
-          const postRes = await fetch('/api/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-          });
-          
-          const result = await postRes.json();
-          
-          if (postRes.ok) {
-            statusEl.classList.add('success');
-            statusEl.textContent = 'Thank you. Your inquiry has been sent successfully. We will reach out soon.';
-            form.reset();
-          } else {
-            statusEl.classList.add('error');
-            statusEl.textContent = result.error || 'Failed to submit form. Please check details and try again.';
-          }
-        } catch (err) {
-          console.error("Form submission error:", err);
-          statusEl.classList.add('error');
-          statusEl.textContent = 'An unexpected error occurred. Please try again later.';
-        }
+        const formattedText = `Hi Sun Soul Style! I'd like to submit an inquiry:\n\n` +
+                              `• Name: ${name}\n` +
+                              `• Email: ${email}\n` +
+                              `• Project Type: ${projectType}\n` +
+                              `• Estimated Budget: ${budget}\n` +
+                              `• Message/Space Details: ${message}`;
+                              
+        const waUrl = `https://wa.me/917073319692?text=${encodeURIComponent(formattedText)}`;
+        
+        setTimeout(() => {
+          window.open(waUrl, '_blank');
+          form.reset();
+          statusEl.textContent = '';
+        }, 1200);
       });
     }
   } catch (err) {
