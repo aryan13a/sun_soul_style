@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /login.html
+Disallow: /forgot-password.html
+Disallow: /reset-password.html
+Disallow: /api/
+
+Sitemap: https://sun-soul-style.vercel.app/sitemap.xml
