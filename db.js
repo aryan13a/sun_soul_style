@@ -15,10 +15,10 @@ if (process.env.VERCEL && !process.env.BLOB_READ_WRITE_TOKEN) {
 // Default initial database state
 const DEFAULT_DB = {
   admin: {
-    // Default password is 'admin123', hashed with sha256
-    passwordHash: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // sha256 of 'admin123'
+    // Default password is 'SunSoulStyle_SecureAdmin_2026!', hashed with sha256
+    passwordHash: 'a9cb3d301c1e82b03e7dcc6828858a9047b614716ae0b98d0288c71afd5f9eb4', // sha256 of 'SunSoulStyle_SecureAdmin_2026!'
     username: 'admin',
-    sessionSecret: 'sunsoulstyle_secret_session_key_2026'
+    sessionSecret: 'placeholder_fallback_session_secret_change_me'
   },
   siteInfo: {
     name: "Sun Soul Style",
@@ -204,7 +204,8 @@ async function syncToVercelBlob(data) {
     });
     console.log("Database successfully synced to Vercel Blob.");
   } catch (e) {
-    console.error("Failed to sync database to Vercel Blob in background:", e);
+    console.error("Failed to sync database to Vercel Blob:", e);
+    throw e;
   }
 }
 
@@ -245,7 +246,7 @@ async function initDb() {
     let initialData = DEFAULT_DB;
     if (dbBlob) {
       console.log("Found database blob at URL:", dbBlob.url);
-      initialData = await fetchJson(dbBlob.url);
+      initialData = await fetchJson(`${dbBlob.url}?t=${Date.now()}`);
     } else {
       console.log("No database blob found in store. Initializing with bundle content.");
       if (fs.existsSync(BUNDLE_DB_PATH)) {
@@ -373,7 +374,7 @@ async function garbageCollectBlobs(oldState, newState) {
   }
 }
 
-function saveData(data) {
+async function saveData(data) {
   // Get current DB state before overwriting
   let oldData = null;
   try {
@@ -390,12 +391,12 @@ function saveData(data) {
 
   // Trigger garbage collection for Vercel Blob
   if (oldData && process.env.BLOB_READ_WRITE_TOKEN) {
-    garbageCollectBlobs(oldData, data);
+    await garbageCollectBlobs(oldData, data);
   }
 
   // Trigger background sync to Vercel Blob in production
   if (process.env.BLOB_READ_WRITE_TOKEN) {
-    syncToVercelBlob(data);
+    await syncToVercelBlob(data);
   }
 }
 

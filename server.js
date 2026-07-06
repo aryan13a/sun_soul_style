@@ -11,6 +11,10 @@ try {
 }
 const db = require('./db');
 
+if (process.env.VERCEL && !process.env.RESEND_API_KEY) {
+  console.warn("WARNING: RESEND_API_KEY environment variable is missing in Vercel environment! Admin password reset emails will NOT work, and links will only log to stdout (inaccessible to users).");
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -43,6 +47,9 @@ app.use((req, res, next) => {
 
 // Simple Session Store helper functions (stateless signature-based tokens)
 const getSecretKey = () => {
+  if (process.env.SESSION_SECRET) {
+    return process.env.SESSION_SECRET;
+  }
   try {
     return db.getData().admin.sessionSecret || 'sunsoulstyledefaultsecret';
   } catch (e) {
@@ -167,17 +174,25 @@ app.get('/api/auth-check', (req, res) => {
 
 // GET raw database backup (authenticated only)
 app.get('/api/raw-db', requireAuth, (req, res) => {
-  res.json(db.getData());
+  const data = db.getData();
+  const safeData = { ...data };
+  delete safeData.admin;
+  res.json(safeData);
 });
 
-app.post('/api/change-password', requireAuth, (req, res) => {
+app.post('/api/change-password', requireAuth, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
   const currentDb = db.getData();
   
   if (db.hashPassword(currentPassword) === currentDb.admin.passwordHash) {
     currentDb.admin.passwordHash = db.hashPassword(newPassword);
-    db.saveData(currentDb);
-    return res.json({ success: true, message: 'Password updated successfully' });
+    try {
+      await db.saveData(currentDb);
+      return res.json({ success: true, message: 'Password updated successfully' });
+    } catch (err) {
+      console.error("Failed to change password:", err);
+      return res.status(500).json({ error: 'Failed to persist database changes.' });
+    }
   }
   res.status(400).json({ error: 'Incorrect current password' });
 });
@@ -199,7 +214,7 @@ app.post('/api/forgot-password', async (req, res) => {
     
     currentDb.admin.resetToken = token;
     currentDb.admin.resetTokenExpiry = expiry;
-    db.saveData(currentDb);
+    await db.saveData(currentDb);
     
     const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
     const host = req.get('host');
@@ -231,6 +246,9 @@ app.post('/api/forgot-password', async (req, res) => {
       });
       console.log(`Password reset email successfully sent to ${contactEmail}`);
     } else {
+      if (process.env.VERCEL) {
+        console.error("CRITICAL WARNING: RESEND_API_KEY environment variable is missing in Vercel environment! Forgot password emails will NOT be sent. The reset link is only output to the logs.");
+      }
       console.warn("WARNING: RESEND_API_KEY environment variable is not set! Reset link printed to console instead:");
       console.warn(`👉 PASSWORD RESET LINK: ${resetLink}`);
     }
@@ -243,7 +261,7 @@ app.post('/api/forgot-password', async (req, res) => {
 });
 
 // Validate Token & Reset Password Endpoint
-app.post('/api/reset-password', (req, res) => {
+app.post('/api/reset-password', async (req, res) => {
   const { token, newPassword } = req.body;
   
   if (!token || !newPassword) {
@@ -264,9 +282,13 @@ app.post('/api/reset-password', (req, res) => {
     currentDb.admin.resetToken = null;
     currentDb.admin.resetTokenExpiry = null;
     
-    db.saveData(currentDb);
-    
-    return res.json({ success: true, message: 'Password has been reset successfully. Please log in with your new password.' });
+    try {
+      await db.saveData(currentDb);
+      return res.json({ success: true, message: 'Password has been reset successfully. Please log in with your new password.' });
+    } catch (err) {
+      console.error("Failed to reset password:", err);
+      return res.status(500).json({ error: 'Failed to persist database changes.' });
+    }
   }
   
   res.status(400).json({ error: 'Invalid or expired password reset token.' });
@@ -278,11 +300,16 @@ app.get('/api/site-info', (req, res) => {
   res.json(data.siteInfo);
 });
 
-app.put('/api/site-info', requireAuth, (req, res) => {
+app.put('/api/site-info', requireAuth, async (req, res) => {
   const data = db.getData();
   data.siteInfo = { ...data.siteInfo, ...req.body };
-  db.saveData(data);
-  res.json({ success: true, data: data.siteInfo });
+  try {
+    await db.saveData(data);
+    res.json({ success: true, data: data.siteInfo });
+  } catch (err) {
+    console.error("Failed to save site info:", err);
+    res.status(500).json({ error: 'Failed to persist database changes.' });
+  }
 });
 
 // 3. Projects APIs
@@ -303,7 +330,7 @@ app.get('/api/projects/:id', (req, res) => {
   }
 });
 
-app.post('/api/projects', requireAuth, (req, res) => {
+app.post('/api/projects', requireAuth, async (req, res) => {
   const data = db.getData();
   const newProject = {
     id: `project-${Date.now()}`,
@@ -324,11 +351,16 @@ app.post('/api/projects', requireAuth, (req, res) => {
   };
   
   data.projects.push(newProject);
-  db.saveData(data);
-  res.status(201).json({ success: true, project: newProject });
+  try {
+    await db.saveData(data);
+    res.status(201).json({ success: true, project: newProject });
+  } catch (err) {
+    console.error("Failed to save project:", err);
+    res.status(500).json({ error: 'Failed to persist database changes.' });
+  }
 });
 
-app.put('/api/projects/:id', requireAuth, (req, res) => {
+app.put('/api/projects/:id', requireAuth, async (req, res) => {
   const data = db.getData();
   const index = data.projects.findIndex(p => p.id === req.params.id);
   
@@ -340,27 +372,37 @@ app.put('/api/projects/:id', requireAuth, (req, res) => {
       featured: req.body.featured === true || req.body.featured === 'true',
       order: parseInt(req.body.order) || data.projects[index].order || 0
     };
-    db.saveData(data);
-    res.json({ success: true, project: data.projects[index] });
+    try {
+      await db.saveData(data);
+      res.json({ success: true, project: data.projects[index] });
+    } catch (err) {
+      console.error("Failed to update project:", err);
+      res.status(500).json({ error: 'Failed to persist database changes.' });
+    }
   } else {
     res.status(404).json({ error: 'Project not found' });
   }
 });
 
-app.delete('/api/projects/:id', requireAuth, (req, res) => {
+app.delete('/api/projects/:id', requireAuth, async (req, res) => {
   const data = db.getData();
   const filtered = data.projects.filter(p => p.id !== req.params.id);
   if (filtered.length !== data.projects.length) {
     data.projects = filtered;
-    db.saveData(data);
-    res.json({ success: true, message: 'Project deleted' });
+    try {
+      await db.saveData(data);
+      res.json({ success: true, message: 'Project deleted' });
+    } catch (err) {
+      console.error("Failed to delete project:", err);
+      res.status(500).json({ error: 'Failed to persist database changes.' });
+    }
   } else {
     res.status(404).json({ error: 'Project not found' });
   }
 });
 
 // Reorder projects API
-app.post('/api/projects/reorder', requireAuth, (req, res) => {
+app.post('/api/projects/reorder', requireAuth, async (req, res) => {
   const { orders } = req.body; // Expecting { "project-id-1": 1, "project-id-2": 2 }
   if (!orders) return res.status(400).json({ error: 'Orders data required' });
   
@@ -371,8 +413,13 @@ app.post('/api/projects/reorder', requireAuth, (req, res) => {
     }
   });
   
-  db.saveData(data);
-  res.json({ success: true, message: 'Projects reordered successfully' });
+  try {
+    await db.saveData(data);
+    res.json({ success: true, message: 'Projects reordered successfully' });
+  } catch (err) {
+    console.error("Failed to reorder projects:", err);
+    res.status(500).json({ error: 'Failed to persist database changes.' });
+  }
 });
 
 // 4. Services APIs
@@ -381,13 +428,18 @@ app.get('/api/services', (req, res) => {
   res.json(data.services);
 });
 
-app.put('/api/services', requireAuth, (req, res) => {
+app.put('/api/services', requireAuth, async (req, res) => {
   // Save entire services array
   if (!Array.isArray(req.body)) return res.status(400).json({ error: 'Expected services array' });
   const data = db.getData();
   data.services = req.body;
-  db.saveData(data);
-  res.json({ success: true, services: data.services });
+  try {
+    await db.saveData(data);
+    res.json({ success: true, services: data.services });
+  } catch (err) {
+    console.error("Failed to update services:", err);
+    res.status(500).json({ error: 'Failed to persist database changes.' });
+  }
 });
 
 // 5. Testimonials APIs
@@ -396,17 +448,22 @@ app.get('/api/testimonials', (req, res) => {
   res.json(data.testimonials);
 });
 
-app.put('/api/testimonials', requireAuth, (req, res) => {
+app.put('/api/testimonials', requireAuth, async (req, res) => {
   // Save entire testimonials array
   if (!Array.isArray(req.body)) return res.status(400).json({ error: 'Expected testimonials array' });
   const data = db.getData();
   data.testimonials = req.body;
-  db.saveData(data);
-  res.json({ success: true, testimonials: data.testimonials });
+  try {
+    await db.saveData(data);
+    res.json({ success: true, testimonials: data.testimonials });
+  } catch (err) {
+    console.error("Failed to update testimonials:", err);
+    res.status(500).json({ error: 'Failed to persist database changes.' });
+  }
 });
 
 // 6. Contact Messages APIs
-app.post('/api/contact', (req, res) => {
+app.post('/api/contact', async (req, res) => {
   const { name, email, projectType, budget, message } = req.body;
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Name, email, and message are required.' });
@@ -425,8 +482,13 @@ app.post('/api/contact', (req, res) => {
   };
   
   data.messages.push(newMessage);
-  db.saveData(data);
-  res.json({ success: true, message: 'Message sent successfully.' });
+  try {
+    await db.saveData(data);
+    res.json({ success: true, message: 'Message sent successfully.' });
+  } catch (err) {
+    console.error("Failed to save contact message:", err);
+    res.status(500).json({ error: 'Failed to persist database changes.' });
+  }
 });
 
 app.get('/api/messages', requireAuth, (req, res) => {
@@ -436,25 +498,35 @@ app.get('/api/messages', requireAuth, (req, res) => {
   res.json(sortedMessages);
 });
 
-app.put('/api/messages/:id/read', requireAuth, (req, res) => {
+app.put('/api/messages/:id/read', requireAuth, async (req, res) => {
   const data = db.getData();
   const msg = data.messages.find(m => m.id === req.params.id);
   if (msg) {
     msg.read = req.body.read === true;
-    db.saveData(data);
-    res.json({ success: true, message: msg });
+    try {
+      await db.saveData(data);
+      res.json({ success: true, message: msg });
+    } catch (err) {
+      console.error("Failed to update message read status:", err);
+      res.status(500).json({ error: 'Failed to persist database changes.' });
+    }
   } else {
     res.status(404).json({ error: 'Message not found' });
   }
 });
 
-app.delete('/api/messages/:id', requireAuth, (req, res) => {
+app.delete('/api/messages/:id', requireAuth, async (req, res) => {
   const data = db.getData();
   const filtered = data.messages.filter(m => m.id !== req.params.id);
   if (filtered.length !== data.messages.length) {
     data.messages = filtered;
-    db.saveData(data);
-    res.json({ success: true, message: 'Message deleted' });
+    try {
+      await db.saveData(data);
+      res.json({ success: true, message: 'Message deleted' });
+    } catch (err) {
+      console.error("Failed to delete message:", err);
+      res.status(500).json({ error: 'Failed to persist database changes.' });
+    }
   } else {
     res.status(404).json({ error: 'Message not found' });
   }
@@ -565,23 +637,7 @@ app.post('/api/upload', requireAuth, upload.single('image'), async (req, res) =>
   }
 });
 
-// Helper: Generate a secure random crypto token
-function cryptoToken() {
-  return crypto.randomBytes(24).toString('hex');
-}
 
-// Route to serve uploads (needed for serving from /tmp on Vercel)
-app.get('/uploads/:filename', (req, res) => {
-  const uploadsDir = process.env.VERCEL
-    ? path.join('/tmp', 'uploads')
-    : path.join(__dirname, 'public', 'uploads');
-  const filePath = path.join(uploadsDir, req.params.filename);
-  if (fs.existsSync(filePath)) {
-    res.sendFile(filePath);
-  } else {
-    res.status(404).send('File not found');
-  }
-});
 
 // Express Error Handler for Multer and other errors
 app.use((err, req, res, next) => {
