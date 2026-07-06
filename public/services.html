@@ -2,13 +2,123 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=/">
-  <script>
-    window.location.replace("/");
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services | Sun Soul Style</title>
+  <meta name="description" content="Explore our interior design services at Sun Soul Style. We offer Full-Service Interior Design, E-Design & Space Curation, and one-on-one Design Consultations by Keshavi Gupta in Jaipur, Rajasthan.">
+  <link rel="canonical" href="https://sun-soul-style.vercel.app/services.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Services | Sun Soul Style">
+  <meta property="og:description" content="Explore our interior design services at Sun Soul Style. We offer Full-Service Interior Design, E-Design & Space Curation, and one-on-one Design Consultations by Keshavi Gupta in Jaipur, Rajasthan.">
+  <meta property="og:image" content="https://sun-soul-style.vercel.app/assets/project-living.jpg">
+  <meta property="og:url" content="https://sun-soul-style.vercel.app/services.html">
+  <meta property="og:site_name" content="Sun Soul Style">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Services | Sun Soul Style">
+  <meta name="twitter:description" content="Explore our interior design services at Sun Soul Style. We offer Full-Service Interior Design, E-Design & Space Curation, and one-on-one Design Consultations by Keshavi Gupta in Jaipur, Rajasthan.">
+  <meta name="twitter:image" content="https://sun-soul-style.vercel.app/assets/project-living.jpg">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="icon" type="image/png" href="/assets/logo.png">
+  <link rel="apple-touch-icon" href="/assets/logo.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://sun-soul-style.vercel.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://sun-soul-style.vercel.app/services.html" }
+    ]
+  }
   </script>
-  <title>Redirecting...</title>
 </head>
-<body>
-  Redirecting to Home...
+<body class="page-services" style="padding-top: var(--header-height);">
+
+  <!-- Custom Cursor Elements -->
+  <div class="custom-cursor"></div>
+  <div class="custom-cursor-follower"></div>
+
+  <!-- Header Navigation -->
+  <header>
+    <div class="container nav-container">
+      <a href="/" class="logo">
+        <img src="/assets/logo.png" alt="Sun Soul Style Logo" class="logo-img">
+        <span class="logo-text js-brand-name">Sun Soul Style</span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/services.html" class="active">Services</a></li>
+        <li><a href="/projects.html">Portfolio</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+      </ul>
+      
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Intro Section -->
+  <section class="section-padding" style="padding-bottom: 40px; background-color: var(--color-warm-white);">
+    <div class="container" style="text-align: center;">
+      <span class="section-subtitle reveal">Our Services</span>
+      <h1 class="serif-title reveal reveal-delay-1" style="font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; margin-top: 15px; margin-bottom: 25px;">Design Services</h1>
+      <p class="reveal reveal-delay-2" style="max-width: 600px; margin: 0 auto; opacity: 0.8; font-weight: 300;">Custom residential design, curated space planning, and consultation services tailored for slow living.</p>
+    </div>
+  </section>
+
+  <!-- Services Grid -->
+  <section class="section-padding" style="padding-top: 40px;">
+    <div class="container">
+      <div class="services-grid" id="services-grid">
+        <!-- Rendered dynamically by main.js -->
+        <p style="grid-column: 1/-1; text-align: center; opacity: 0.5;">Loading design services...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <img src="/assets/logo.png" alt="Sun Soul Style Logo" class="logo-img">
+            <span class="logo-text js-brand-name">Sun Soul Style</span>
+          </a>
+          <p class="footer-tagline">Warm, elevated interiors crafted for slow living. Based in Jaipur, Rajasthan, styling globally.</p>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Explore</h3>
+          <ul class="footer-links">
+            <li><a href="/projects.html">Portfolio</a></li>
+            <li><a href="/about.html">About Keshavi</a></li>
+            <li><a href="/contact.html">Work With Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <ul class="footer-links">
+            <li><span class="js-studio-location">Jaipur, Rajasthan</span></li>
+            <li><a href="mailto:hello@sunsoulstyle.com" class="js-bio-email">hello@sunsoulstyle.com</a></li>
+            <li><a href="tel:+917073319692" class="js-bio-phone">+91 70733 19692</a></li>
+            <li><a href="https://instagram.com" target="_blank" rel="noopener" class="js-instagram-handle">@sun_soul_style</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 <span class="js-brand-name">Sun Soul Style</span>. All rights reserved.</p>
+        <p style="opacity: 0.7;"><a href="/admin">Client Admin Login</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
 </body>
 </html>

@@ -659,6 +659,7 @@ app.get('/sitemap.xml', (req, res) => {
   const staticPages = [
     { url: '/', priority: '1.0', changefreq: 'weekly' },
     { url: '/projects.html', priority: '0.9', changefreq: 'weekly' },
+    { url: '/services.html', priority: '0.7', changefreq: 'monthly' },
     { url: '/about.html', priority: '0.7', changefreq: 'monthly' },
     { url: '/contact.html', priority: '0.6', changefreq: 'monthly' },
   ];
