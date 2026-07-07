@@ -1,0 +1,37 @@
+[
+  {
+    "id": "service-1",
+    "name": "Full-Service Interior Design",
+    "price": "Starting at \u20b95,00,000",
+    "description": "From initial concept planning to construction documents and final styling, we handle every detail of your renovation or new build.",
+    "deliverables": [
+      "Space planning and furniture layouts",
+      "Material, fixture, and finishes selection",
+      "3D photo-realistic renderings",
+      "Procurement, logistics, and installation"
+    ]
+  },
+  {
+    "id": "service-2",
+    "name": "E-Design & Space Curation",
+    "price": "Flat Fee \u20b91,50,000 / room",
+    "description": "A flexible, virtual design service providing you with a custom blueprint to execute at your own pace.",
+    "deliverables": [
+      "Digital concept board and color palette",
+      "To-scale room layout plan",
+      "Curated shopping list with direct purchase links",
+      "Step-by-step setup and styling guide"
+    ]
+  },
+  {
+    "id": "service-3",
+    "name": "Design Consultation",
+    "price": "\u20b925,000 / hour",
+    "description": "A focused, one-on-one session to solve specific design challenges, select paint colors, or refine layouts.",
+    "deliverables": [
+      "Up to 2 hours in-person or virtual consultation",
+      "Color palette and general styling advice",
+      "Follow-up recap with resource notes"
+    ]
+  }
+]

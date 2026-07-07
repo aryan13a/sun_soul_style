@@ -98,7 +98,7 @@ function initCommonUX() {
 
 async function fetchSiteInfo() {
   try {
-    const res = await fetch('/api/site-info');
+    const res = await fetch('/api/site-info.json');
     if (!res.ok) throw new Error("Failed to load site info");
     const info = await res.json();
     
@@ -175,7 +175,7 @@ function dispatchPageRouter() {
 async function loadHomePage() {
   try {
     // 1. Fetch and apply Hero details
-    const siteRes = await fetch('/api/site-info');
+    const siteRes = await fetch('/api/site-info.json');
     if (siteRes.ok) {
       const info = await siteRes.json();
       
@@ -222,7 +222,7 @@ async function loadHomePage() {
     }
 
     // 2. Fetch and render Featured Projects
-    const projRes = await fetch('/api/projects');
+    const projRes = await fetch('/api/projects.json');
     if (projRes.ok) {
       const projects = await projRes.json();
       const featured = projects.filter(p => p.featured).slice(0, 4); // limit to 4 featured
@@ -274,7 +274,7 @@ async function loadHomePage() {
     }
 
     // 3. Fetch and render Testimonials Slider
-    const testRes = await fetch('/api/testimonials');
+    const testRes = await fetch('/api/testimonials.json');
     if (testRes.ok) {
       const testimonials = await testRes.json();
       initTestimonialSlider(testimonials);
@@ -321,7 +321,7 @@ function initTestimonialSlider(testimonials) {
 
 async function loadProjectsPage() {
   try {
-    const res = await fetch('/api/projects');
+    const res = await fetch('/api/projects.json');
     if (!res.ok) throw new Error("Failed to load projects");
     const projects = await res.json();
     
@@ -424,13 +424,16 @@ async function loadProjectDetailPage() {
       return;
     }
     
-    const res = await fetch(`/api/projects/${id}`);
-    if (!res.ok) {
+    const res = await fetch('/api/projects.json');
+    if (!res.ok) throw new Error("Failed to load projects");
+    const projects = await res.json();
+    const project = projects.find(p => p.id === id);
+    
+    if (!project) {
       console.error("Project not found");
       window.location.href = '/projects.html';
       return;
     }
-    const project = await res.json();
     
     // Populate Page Elements
     document.getElementById('project-title').textContent = project.title;
@@ -553,7 +556,7 @@ function initBeforeAfterSlider() {
 
 async function loadAboutPage() {
   try {
-    const res = await fetch('/api/site-info');
+    const res = await fetch('/api/site-info.json');
     if (!res.ok) throw new Error("Failed to load bio data");
     const info = await res.json();
     
@@ -577,7 +580,7 @@ async function loadAboutPage() {
 
 async function loadServicesPage() {
   try {
-    const res = await fetch('/api/services');
+    const res = await fetch('/api/services.json');
     if (!res.ok) throw new Error("Failed to load services");
     const services = await res.json();
     
@@ -628,7 +631,7 @@ async function loadServicesPage() {
 
 async function loadContactPage() {
   try {
-    const res = await fetch('/api/site-info');
+    const res = await fetch('/api/site-info.json');
     if (res.ok) {
       const info = await res.json();
       const responseNoteEl = document.getElementById('contact-response-note');
