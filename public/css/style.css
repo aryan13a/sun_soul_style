@@ -1336,13 +1336,13 @@ footer {
   opacity: 1;
 }
 
-/* --- Newsletter Banner --- */
-.newsletter-section {
+/* --- Studio Philosophy Banner --- */
+.philosophy-cta-section {
   background-color: var(--color-walnut);
   color: var(--color-warm-white);
   text-align: center;
 }
-.newsletter-container {
+.philosophy-cta-container {
   max-width: 650px;
   margin: 0 auto;
   display: flex;
@@ -1350,52 +1350,26 @@ footer {
   align-items: center;
   gap: 24px;
 }
-.newsletter-container h2 {
+.philosophy-cta-container h2 {
   font-size: clamp(2rem, 3.5vw, 2.8rem);
 }
-.newsletter-container p {
+.philosophy-cta-container p {
   font-weight: 200;
   opacity: 0.8;
   font-size: 1rem;
 }
-.newsletter-form {
-  width: 100%;
-  display: flex;
-  gap: 12px;
-  margin-top: 10px;
-}
-@media (max-width: 576px) {
-  .newsletter-form {
-    flex-direction: column;
-  }
-}
-.newsletter-input {
-  flex: 1;
-  background-color: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 14px 20px;
-  font-size: 0.95rem;
+.btn-text-link {
   color: var(--color-warm-white);
-  transition: var(--transition-fast);
-}
-.newsletter-input:focus {
-  border-color: var(--color-ochre);
-  background-color: rgba(255,255,255,0.1);
-}
-.btn-newsletter {
-  background-color: var(--color-warm-white);
-  color: var(--color-walnut);
-  padding: 14px 28px;
-  font-size: 0.8rem;
+  text-decoration: none;
+  font-size: 0.85rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  font-weight: 600;
-  cursor: pointer;
+  font-weight: 500;
+  display: inline-block;
   transition: var(--transition-fast);
 }
-.btn-newsletter:hover {
-  background-color: var(--color-ochre);
-  color: var(--color-warm-white);
+.btn-text-link:hover {
+  color: var(--color-ochre);
 }
 
 /* WhatsApp Custom Styling */
