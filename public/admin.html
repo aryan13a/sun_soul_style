@@ -73,6 +73,11 @@
             <span>Portfolio Projects</span>
           </a>
         </li>
+        <li class="sidebar-menu-item" data-tab="services">
+          <a href="#">
+            <span>Service Packages</span>
+          </a>
+        </li>
 
         <li class="sidebar-menu-item" data-tab="testimonials">
           <a href="#">
@@ -107,6 +112,10 @@
           <div class="stat-card">
             <span class="stat-label">Active Projects</span>
             <span class="stat-value" id="stat-projects-count">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Service Packages</span>
+            <span class="stat-value" id="stat-services-count">0</span>
           </div>
         </div>
 
@@ -293,6 +302,24 @@
       </section>
 
 
+
+      <!-- 4. SERVICE PACKAGES TAB -->
+      <section class="tab-panel" id="tab-services">
+        <div class="main-header">
+          <h2>Service Packages</h2>
+          <div class="main-header-actions">
+            <button class="btn-admin-primary" id="btn-add-service-item" type="button">+ Add Service Package</button>
+          </div>
+        </div>
+        
+        <form class="admin-form" id="services-edit-form">
+          <div id="services-list-container">
+            <!-- Loaded dynamically -->
+          </div>
+          
+          <button type="submit" class="btn-admin-primary" style="margin-top: 10px;">Save Services</button>
+        </form>
+      </section>
 
       <!-- 5. CLIENT TESTIMONIALS TAB -->
       <section class="tab-panel" id="tab-testimonials">
