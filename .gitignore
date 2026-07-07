@@ -3,6 +3,5 @@ node_modules/
 *.log
 npm-debug.log*
 .system_generated/
-db.json
 public/uploads/
 .vercel
