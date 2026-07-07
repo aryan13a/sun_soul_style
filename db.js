@@ -193,18 +193,36 @@ function fetchJson(url) {
 
 // Background sync function to write to Vercel Blob
 async function syncToVercelBlob(data) {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return;
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  const tokenExists = typeof token === 'string' && token.length > 0;
+  const tokenValid = tokenExists && token.startsWith('vercel_blob_rw_');
+
+  console.log(`syncToVercelBlob validation check: token_exists=${tokenExists}`);
+
+  if (!tokenExists || !tokenValid) {
+    const errorMsg = "BLOB_READ_WRITE_TOKEN is missing or malformed (must start with 'vercel_blob_rw_')";
+    console.error(`syncToVercelBlob validation failed: ${errorMsg}`);
+    throw new Error(errorMsg);
+  }
+
   try {
     const { put } = require('@vercel/blob');
+    console.log("Calling @vercel/blob put() to sync db.json. Payload length: " + JSON.stringify(data).length);
     await put('db.json', JSON.stringify(data, null, 2), {
       access: 'public',
       addRandomSuffix: false,
       allowOverwrite: true,
-      token: process.env.BLOB_READ_WRITE_TOKEN
+      token: token
     });
     console.log("Database successfully synced to Vercel Blob.");
   } catch (e) {
-    console.error("Failed to sync database to Vercel Blob:", e);
+    console.error("Vercel Blob put() call failed with error details:", {
+      name: e.name,
+      message: e.message,
+      status: e.status || e.statusCode || (e.response ? e.response.status : undefined),
+      code: e.code,
+      stack: e.stack
+    });
     throw e;
   }
 }
@@ -395,7 +413,7 @@ async function saveData(data) {
   }
 
   // Trigger background sync to Vercel Blob in production
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  if (process.env.VERCEL || process.env.BLOB_READ_WRITE_TOKEN) {
     await syncToVercelBlob(data);
   }
 }

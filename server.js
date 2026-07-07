@@ -191,7 +191,11 @@ app.post('/api/change-password', requireAuth, async (req, res) => {
       return res.json({ success: true, message: 'Password updated successfully' });
     } catch (err) {
       console.error("Failed to change password:", err);
-      return res.status(500).json({ error: 'Failed to persist database changes.' });
+      return res.status(500).json({
+        error: 'Failed to persist database changes.',
+        message: err.message,
+        stack: err.stack
+      });
     }
   }
   res.status(400).json({ error: 'Incorrect current password' });
@@ -256,7 +260,11 @@ app.post('/api/forgot-password', async (req, res) => {
     res.json({ success: true, message: 'If the username is correct, a password reset link has been sent.' });
   } catch (err) {
     console.error("Forgot password request failed:", err);
-    res.status(500).json({ error: 'Failed to send password reset request. Please check server logs.' });
+    res.status(500).json({
+      error: 'Failed to send password reset request. Please check server logs.',
+      message: err.message,
+      stack: err.stack
+    });
   }
 });
 
@@ -287,7 +295,11 @@ app.post('/api/reset-password', async (req, res) => {
       return res.json({ success: true, message: 'Password has been reset successfully. Please log in with your new password.' });
     } catch (err) {
       console.error("Failed to reset password:", err);
-      return res.status(500).json({ error: 'Failed to persist database changes.' });
+      return res.status(500).json({
+        error: 'Failed to persist database changes.',
+        message: err.message,
+        stack: err.stack
+      });
     }
   }
   
@@ -308,7 +320,11 @@ app.put('/api/site-info', requireAuth, async (req, res) => {
     res.json({ success: true, data: data.siteInfo });
   } catch (err) {
     console.error("Failed to save site info:", err);
-    res.status(500).json({ error: 'Failed to persist database changes.' });
+    res.status(500).json({
+      error: 'Failed to persist database changes.',
+      message: err.message,
+      stack: err.stack
+    });
   }
 });
 
@@ -356,7 +372,11 @@ app.post('/api/projects', requireAuth, async (req, res) => {
     res.status(201).json({ success: true, project: newProject });
   } catch (err) {
     console.error("Failed to save project:", err);
-    res.status(500).json({ error: 'Failed to persist database changes.' });
+    res.status(500).json({
+      error: 'Failed to persist database changes.',
+      message: err.message,
+      stack: err.stack
+    });
   }
 });
 
@@ -377,7 +397,11 @@ app.put('/api/projects/:id', requireAuth, async (req, res) => {
       res.json({ success: true, project: data.projects[index] });
     } catch (err) {
       console.error("Failed to update project:", err);
-      res.status(500).json({ error: 'Failed to persist database changes.' });
+      return res.status(500).json({
+        error: 'Failed to persist database changes.',
+        message: err.message,
+        stack: err.stack
+      });
     }
   } else {
     res.status(404).json({ error: 'Project not found' });
@@ -394,7 +418,11 @@ app.delete('/api/projects/:id', requireAuth, async (req, res) => {
       res.json({ success: true, message: 'Project deleted' });
     } catch (err) {
       console.error("Failed to delete project:", err);
-      res.status(500).json({ error: 'Failed to persist database changes.' });
+      return res.status(500).json({
+        error: 'Failed to persist database changes.',
+        message: err.message,
+        stack: err.stack
+      });
     }
   } else {
     res.status(404).json({ error: 'Project not found' });
@@ -418,7 +446,11 @@ app.post('/api/projects/reorder', requireAuth, async (req, res) => {
     res.json({ success: true, message: 'Projects reordered successfully' });
   } catch (err) {
     console.error("Failed to reorder projects:", err);
-    res.status(500).json({ error: 'Failed to persist database changes.' });
+    res.status(500).json({
+      error: 'Failed to persist database changes.',
+      message: err.message,
+      stack: err.stack
+    });
   }
 });
 
@@ -438,7 +470,11 @@ app.put('/api/services', requireAuth, async (req, res) => {
     res.json({ success: true, services: data.services });
   } catch (err) {
     console.error("Failed to update services:", err);
-    res.status(500).json({ error: 'Failed to persist database changes.' });
+    res.status(500).json({
+      error: 'Failed to persist database changes.',
+      message: err.message,
+      stack: err.stack
+    });
   }
 });
 
@@ -458,7 +494,11 @@ app.put('/api/testimonials', requireAuth, async (req, res) => {
     res.json({ success: true, testimonials: data.testimonials });
   } catch (err) {
     console.error("Failed to update testimonials:", err);
-    res.status(500).json({ error: 'Failed to persist database changes.' });
+    res.status(500).json({
+      error: 'Failed to persist database changes.',
+      message: err.message,
+      stack: err.stack
+    });
   }
 });
 
@@ -487,7 +527,11 @@ app.post('/api/contact', async (req, res) => {
     res.json({ success: true, message: 'Message sent successfully.' });
   } catch (err) {
     console.error("Failed to save contact message:", err);
-    res.status(500).json({ error: 'Failed to persist database changes.' });
+    res.status(500).json({
+      error: 'Failed to persist database changes.',
+      message: err.message,
+      stack: err.stack
+    });
   }
 });
 
@@ -508,7 +552,11 @@ app.put('/api/messages/:id/read', requireAuth, async (req, res) => {
       res.json({ success: true, message: msg });
     } catch (err) {
       console.error("Failed to update message read status:", err);
-      res.status(500).json({ error: 'Failed to persist database changes.' });
+      return res.status(500).json({
+        error: 'Failed to persist database changes.',
+        message: err.message,
+        stack: err.stack
+      });
     }
   } else {
     res.status(404).json({ error: 'Message not found' });
@@ -525,7 +573,11 @@ app.delete('/api/messages/:id', requireAuth, async (req, res) => {
       res.json({ success: true, message: 'Message deleted' });
     } catch (err) {
       console.error("Failed to delete message:", err);
-      res.status(500).json({ error: 'Failed to persist database changes.' });
+      return res.status(500).json({
+        error: 'Failed to persist database changes.',
+        message: err.message,
+        stack: err.stack
+      });
     }
   } else {
     res.status(404).json({ error: 'Message not found' });
