@@ -79,11 +79,6 @@
             <span>Client Notes</span>
           </a>
         </li>
-        <li class="sidebar-menu-item" data-tab="inquiries">
-          <a href="#">
-            <span>Inquiries Inbox</span>
-          </a>
-        </li>
         <li class="sidebar-menu-item" data-tab="settings">
           <a href="#">
             <span>Dashboard Security</span>
@@ -112,15 +107,6 @@
           <div class="stat-card">
             <span class="stat-label">Active Projects</span>
             <span class="stat-value" id="stat-projects-count">0</span>
-          </div>
-
-          <div class="stat-card">
-            <span class="stat-label">Total Inquiries</span>
-            <span class="stat-value" id="stat-inquiries-count">0</span>
-          </div>
-          <div class="stat-card" style="border-color: var(--color-ochre);">
-            <span class="stat-label" style="color: var(--color-ochre);">Unread Messages</span>
-            <span class="stat-value" id="stat-unread-count">0</span>
           </div>
         </div>
 
@@ -326,32 +312,6 @@
         </form>
       </section>
 
-      <!-- 6. INQUIRIES INBOX TAB -->
-      <section class="tab-panel" id="tab-inquiries">
-        <div class="main-header">
-          <h2>Inquiries Inbox</h2>
-        </div>
-        
-        <div class="admin-card">
-          <div class="admin-table-wrapper">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Client</th>
-                  <th>Email</th>
-                  <th>Project Type</th>
-                  <th>Received Date</th>
-                  <th style="width: 220px;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="inquiries-table-body">
-                <!-- Loaded dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
       <!-- 7. SECURITY SETTINGS TAB -->
       <section class="tab-panel" id="tab-settings">
         <div class="main-header">
@@ -532,50 +492,6 @@
           <button type="submit" class="btn-admin-primary">Save Project</button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <!-- MODAL: VIEW CLIENT INQUIRY MESSAGE -->
-  <div class="admin-modal" id="inquiry-modal">
-    <div class="modal-content" style="max-width: 650px;">
-      <div class="modal-header">
-        <h3>Client Inquiry Details</h3>
-        <span class="modal-close" onclick="closeInquiryModal()">&times;</span>
-      </div>
-      
-      <div class="modal-body">
-        <table class="admin-table" style="margin-bottom: 20px;">
-          <tr>
-            <th style="width: 150px; background: none; border:none; padding: 10px 0;">Client Name</th>
-            <td style="border:none; padding: 10px 0;" id="inquiry-detail-name">Keshavi Gupta</td>
-          </tr>
-          <tr>
-            <th style="background: none; border:none; padding: 10px 0;">Email</th>
-            <td style="border:none; padding: 10px 0;"><a href="" id="inquiry-detail-email">hello@sunsoulstyle.com</a></td>
-          </tr>
-          <tr>
-            <th style="background: none; border:none; padding: 10px 0;">Project Type</th>
-            <td style="border:none; padding: 10px 0;" id="inquiry-detail-type">Full Home</td>
-          </tr>
-          <tr>
-            <th style="background: none; border:none; padding: 10px 0;">Estimated Budget</th>
-            <td style="border:none; padding: 10px 0;" id="inquiry-detail-budget">$100k-$200k</td>
-          </tr>
-          <tr>
-            <th style="background: none; border:none; padding: 10px 0;">Received Date</th>
-            <td style="border:none; padding: 10px 0;" id="inquiry-detail-date">Jul 4, 2026</td>
-          </tr>
-        </table>
-        
-        <div style="border-top: 1px solid var(--color-gray-light); padding-top: 20px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-olive);">Client Project Message</h4>
-          <p id="inquiry-detail-msg" style="white-space: pre-wrap; font-size: 1rem; line-height: 1.6; padding: 15px; background: var(--color-cream); border: 1px solid var(--color-gray-light); color: var(--color-dark);"></p>
-        </div>
-      </div>
-      
-      <div class="modal-footer">
-        <button type="button" class="btn-admin-primary" onclick="closeInquiryModal()">Close Inquiry</button>
-      </div>
     </div>
   </div>
 

@@ -239,9 +239,6 @@ function loadTabContent(tabId) {
     case 'testimonials':
       loadTestimonialsTab();
       break;
-    case 'inquiries':
-      loadInquiriesTab();
-      break;
     case 'settings':
       initSettingsTab();
       break;
@@ -252,23 +249,22 @@ function loadTabContent(tabId) {
 
 async function loadOverviewStats() {
   try {
-    const [projRes, servRes, msgRes] = await Promise.all([
+    const [projRes, servRes] = await Promise.all([
       fetch('/api/projects'),
-      fetch('/api/services'),
-      fetch('/api/messages')
+      fetch('/api/services')
     ]);
     
     const projects = await projRes.json();
     const services = await servRes.json();
-    const messages = await msgRes.json();
     
-    const unreadMsgs = messages.filter(m => !m.read).length;
-    
-    document.getElementById('stat-projects-count').textContent = projects.length;
+    const statProjectsCountEl = document.getElementById('stat-projects-count');
+    if (statProjectsCountEl) {
+      statProjectsCountEl.textContent = projects.length;
+    }
     const servicesEl = document.getElementById('stat-services-count');
-    if (servicesEl) servicesEl.textContent = services.length;
-    document.getElementById('stat-inquiries-count').textContent = messages.length;
-    document.getElementById('stat-unread-count').textContent = unreadMsgs;
+    if (servicesEl) {
+      servicesEl.textContent = services.length;
+    }
   } catch (err) {
     console.error("Failed to load overview statistics:", err);
   }
@@ -901,113 +897,6 @@ function removeTestimonialItem(index) {
   renderTestimonialsList();
 }
 
-// ------------------ TAB: MESSAGES / INQUIRIES ------------------
-
-async function loadInquiriesTab() {
-  try {
-    const res = await fetch('/api/messages');
-    if (!res.ok) throw new Error("Failed to load inquiries");
-    currentInquiries = await res.json();
-    
-    renderInquiriesTable();
-  } catch (err) {
-    console.error("Failed to load inquiries list:", err);
-  }
-}
-
-function renderInquiriesTable() {
-  const tbody = document.getElementById('inquiries-table-body');
-  if (!tbody) return;
-  
-  if (currentInquiries.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; opacity: 0.6; padding: 35px;">No contact inquiries received yet.</td></tr>`;
-    return;
-  }
-  
-  tbody.innerHTML = currentInquiries.map((m) => {
-    const dateStr = new Date(m.date).toLocaleDateString(undefined, { 
-      month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' 
-    });
-    
-    return `
-      <tr class="${m.read ? '' : 'msg-row-unread'}" id="inquiry-row-${m.id}">
-        <td>${!m.read ? '<span class="badge-unread">New</span> ' : ''}${m.name}</td>
-        <td><a href="mailto:${m.email}">${m.email}</a></td>
-        <td>${m.projectType}</td>
-        <td>${dateStr}</td>
-        <td>
-          <div style="display: flex; gap: 10px;">
-            <button class="action-btn-small" onclick="viewInquiry('${m.id}')">View Details</button>
-            <button class="action-btn-small action-btn-danger" onclick="deleteInquiry('${m.id}')">Delete</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join('');
-}
-
-async function viewInquiry(id) {
-  const msg = currentInquiries.find(m => m.id === id);
-  if (!msg) return;
-  
-  // Show dialog modal
-  const modal = document.getElementById('inquiry-modal');
-  modal.classList.add('active');
-  
-  const dateStr = new Date(msg.date).toLocaleString();
-  
-  document.getElementById('inquiry-detail-name').textContent = msg.name;
-  document.getElementById('inquiry-detail-email').textContent = msg.email;
-  document.getElementById('inquiry-detail-email').href = `mailto:${msg.email}`;
-  document.getElementById('inquiry-detail-type').textContent = msg.projectType;
-  document.getElementById('inquiry-detail-budget').textContent = msg.budget;
-  document.getElementById('inquiry-detail-date').textContent = dateStr;
-  document.getElementById('inquiry-detail-msg').textContent = msg.message;
-  
-  // Mark as read in backend if it was unread
-  if (!msg.read) {
-    try {
-      const res = await fetch(`/api/messages/${id}/read`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ read: true })
-      });
-      
-      if (res.ok) {
-        msg.read = true;
-        // update list visually
-        const row = document.getElementById(`inquiry-row-${id}`);
-        if (row) {
-          row.classList.remove('msg-row-unread');
-          const badge = row.querySelector('.badge-unread');
-          if (badge) badge.remove();
-        }
-      }
-    } catch (err) {
-      console.error("Mark message read failed:", err);
-    }
-  }
-}
-
-function closeInquiryModal() {
-  document.getElementById('inquiry-modal').classList.remove('active');
-}
-
-async function deleteInquiry(id) {
-  if (confirm("Are you sure you want to delete this message submission?")) {
-    try {
-      const res = await fetch(`/api/messages/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        showToast("Message deleted");
-        loadInquiriesTab();
-      } else {
-        showToast("Failed to delete message", "error");
-      }
-    } catch (err) {
-      console.error("Delete message error:", err);
-    }
-  }
-}
 
 // ------------------ TAB: SETTINGS (Change Password) ------------------
 
